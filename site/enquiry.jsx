@@ -1,8 +1,30 @@
-const { Button, Eyebrow, Icon, Ornament, Field } = window.HennaByMasuDesignSystem_0b7f2a;
+const { Button, Eyebrow, Icon, Ornament } = window.HennaByMasuDesignSystem_0b7f2a;
 const { Footer, GUTTER } = window;
 
-const WA_NUMBER = "447388905164";
-const ENDPOINT = "send-enquiry.php";
+const labelStyle = { font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" };
+
+function FormField({ label, name, type = "text", required = false, placeholder, options, rows = 3, hint, style }) {
+  const fieldId = `field-${name}`;
+  const shared = { id: fieldId, name, required, placeholder, className: "field-control" };
+  return (
+    <label htmlFor={fieldId} style={{ display: "flex", flexDirection: "column", gap: "6px", ...style }}>
+      <span style={labelStyle}>{label}{required ? " *" : ""}</span>
+      {type === "select" ? (
+        <span style={{ position: "relative", display: "block" }}>
+          <select {...shared} className="field-control field-select" defaultValue={options[0]}>
+            {options.map((o) => <option key={o} value={o}>{o}</option>)}
+          </select>
+          <Icon name="chevronDown" size={16} color="var(--warm-gray-500)" style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+        </span>
+      ) : type === "textarea" ? (
+        <textarea {...shared} rows={rows} />
+      ) : (
+        <input {...shared} type={type} />
+      )}
+      {hint ? <span style={{ ...labelStyle, letterSpacing: "0.12em", color: "var(--warm-gray-600)" }}>{hint}</span> : null}
+    </label>
+  );
+}
 
 function EnquiryHeader() {
   const iconBtn = { display: "grid", placeItems: "center", minWidth: "44px", minHeight: "44px", background: "transparent", border: "none", color: "var(--ivory-50)", cursor: "pointer", textDecoration: "none" };
@@ -19,86 +41,50 @@ function EnquiryHeader() {
   );
 }
 
-const EMPTY = { name: "", phone: "", email: "", address: "", occasion: "Bridal mehndi", date: "", notes: "" };
-
 function EnquiryForm() {
-  const [v, setV] = React.useState(EMPTY);
-  const [status, setStatus] = React.useState("idle");
-  const [error, setError] = React.useState("");
-  const [company, setCompany] = React.useState("");
-  const set = (k) => (val) => setV((s) => ({ ...s, [k]: val }));
-  const message = [
-    "HENNA ENQUIRY",
-    `Name: ${v.name}`,
-    `Phone: ${v.phone}`,
-    `Email: ${v.email}`,
-    `Address: ${v.address}`,
-    `Occasion: ${v.occasion}`,
-    v.date ? `Date: ${v.date}` : null,
-    v.notes ? `Notes: ${v.notes}` : null,
-  ].filter(Boolean).join("\n");
-  const waHref = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
-  const mailHref = `mailto:Masuma0205@icloud.com?subject=${encodeURIComponent("Henna enquiry")}&body=${encodeURIComponent(message)}`;
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    if (form && form.reportValidity && !form.reportValidity()) return;
-    setStatus("sending"); setError("");
-    try {
-      const res = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...v, company }) });
-      const out = await res.json().catch(() => ({}));
-      if (res.ok && out.ok) { setStatus("sent"); return; }
-      throw new Error(out.error || `Server responded ${res.status}`);
-    } catch (err) {
-      setError(String(err.message || err));
-      setStatus("failed");
-    }
-  };
-  if (status === "failed") {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "flex-start", paddingTop: "24px" }}>
-        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.5rem,2.6vw,2rem)", lineHeight: 1.2, letterSpacing: ".03em", textTransform: "uppercase", color: "var(--ivory-50)", margin: 0 }}>We could not send that from here</h2>
-        <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "44ch", margin: 0 }}>Your details are still filled in. Send them straight through on WhatsApp or by email instead and we will pick it up the same way.</p>
-        <div className="cta-row">
-          <Button variant="primary" size="lg" href={waHref}>Send on WhatsApp</Button>
-          <Button variant="outline" size="lg" href={mailHref}>Send by email</Button>
-        </div>
-        <button onClick={() => setStatus("idle")} style={{ background: "none", border: "none", padding: "12px 0", cursor: "pointer", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>Back to the form</button>
-        <p style={{ font: "var(--type-label)", fontSize: "10px", letterSpacing: ".18em", textTransform: "uppercase", color: "var(--warm-gray-500)", margin: 0 }}>{error}</p>
+  return (
+    <div>
+      <div id="enquiry-idle">
+        <form id="enquiry-form" style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
+          <div className="field-grid">
+            <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }} />
+            <FormField label="Full name" name="name" required placeholder="Your name" />
+            <FormField label="Phone number" name="phone" type="tel" required placeholder="Including country code" />
+            <FormField label="Email" name="email" type="email" required placeholder="you@email.com" />
+            <FormField label="Occasion" name="occasion" type="select" options={["Bridal mehndi", "Semi bridal", "Eid mehndi", "Private celebration", "Event or guest henna", "Something else"]} />
+            <FormField label="Address" name="address" required placeholder="Where the henna will be done" style={{ gridColumn: "1 / -1" }} />
+            <FormField label="Date of the celebration" name="date" type="date" style={{ gridColumn: "1 / -1" }} />
+            <FormField label="Anything else" name="notes" type="textarea" rows={3} placeholder="Number of people, timings, design ideas" hint="Optional" style={{ gridColumn: "1 / -1" }} />
+          </div>
+          <div className="cta-row">
+            <Button id="enquiry-submit" variant="primary" size="lg" type="submit">Send enquiry</Button>
+            <Button className="enquiry-mail-link" variant="outline" size="lg" href="mailto:Masuma0205@icloud.com?subject=Henna%20enquiry">Send by email</Button>
+          </div>
+          <p id="enquiry-status" aria-live="polite" style={{ ...labelStyle, margin: 0 }}>We reply within two days</p>
+        </form>
       </div>
-    );
-  }
-  if (status === "sent") {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "28px", alignItems: "flex-start", paddingTop: "24px" }}>
+
+      <div id="enquiry-sent" hidden style={{ display: "flex", flexDirection: "column", gap: "28px", alignItems: "flex-start", paddingTop: "24px" }}>
         <Ornament width="180px" />
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.2, letterSpacing: ".03em", textTransform: "uppercase", color: "var(--ivory-50)", margin: 0 }}>Thank you — your enquiry is with us</h2>
         <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "44ch", margin: 0 }}>It has been sent to the studio and we will reply with availability and a proposal. If you would like to add anything in the meantime, message us directly.</p>
         <div className="cta-row">
-          <Button variant="outline" size="lg" href={waHref}>Message on WhatsApp</Button>
+          <Button className="enquiry-wa-link" variant="outline" size="lg" href="https://wa.me/447388905164">Message on WhatsApp</Button>
         </div>
-        <button onClick={() => { setStatus("idle"); setV(EMPTY); }} style={{ background: "none", border: "none", padding: "12px 0", cursor: "pointer", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>Start again</button>
+        <button id="enquiry-start-again" type="button" style={{ background: "none", border: "none", padding: "12px 0", cursor: "pointer", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>Start again</button>
       </div>
-    );
-  }
-  return (
-    <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
-      <div className="field-grid">
-        <input type="text" name="company" tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }} />
-        <Field label="Full name" required value={v.name} onChange={set("name")} placeholder="Your name" />
-        <Field label="Phone number" type="tel" required value={v.phone} onChange={set("phone")} placeholder="Including country code" />
-        <Field label="Email" type="email" required value={v.email} onChange={set("email")} placeholder="you@email.com" />
-        <Field label="Occasion" type="select" value={v.occasion} onChange={set("occasion")} options={["Bridal mehndi", "Semi bridal", "Eid mehndi", "Private celebration", "Event or guest henna", "Something else"]} />
-        <Field label="Address" required value={v.address} onChange={set("address")} placeholder="Where the henna will be done" style={{ gridColumn: "1 / -1" }} />
-        <Field label="Date of the celebration" type="date" value={v.date} onChange={set("date")} style={{ gridColumn: "1 / -1" }} />
-        <Field label="Anything else" type="textarea" rows={3} value={v.notes} onChange={set("notes")} placeholder="Number of people, timings, design ideas" hint="Optional" style={{ gridColumn: "1 / -1" }} />
+
+      <div id="enquiry-failed" hidden style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "flex-start", paddingTop: "24px" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.5rem,2.6vw,2rem)", lineHeight: 1.2, letterSpacing: ".03em", textTransform: "uppercase", color: "var(--ivory-50)", margin: 0 }}>We could not send that from here</h2>
+        <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "44ch", margin: 0 }}>Your details are still filled in. Send them straight through on WhatsApp or by email instead and we will pick it up the same way.</p>
+        <div className="cta-row">
+          <Button className="enquiry-wa-link" variant="primary" size="lg" href="https://wa.me/447388905164">Send on WhatsApp</Button>
+          <Button className="enquiry-mail-link" variant="outline" size="lg" href="mailto:Masuma0205@icloud.com">Send by email</Button>
+        </div>
+        <button id="enquiry-back-to-form" type="button" style={{ background: "none", border: "none", padding: "12px 0", cursor: "pointer", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>Back to the form</button>
+        <p id="enquiry-error" style={{ font: "var(--type-label)", fontSize: "10px", letterSpacing: ".18em", textTransform: "uppercase", color: "var(--warm-gray-500)", margin: 0 }} />
       </div>
-      <div className="cta-row">
-        <Button variant="primary" size="lg" type="submit" disabled={status === "sending"}>{status === "sending" ? "Sending…" : "Send enquiry"}</Button>
-        <Button variant="outline" size="lg" href={mailHref}>Send by email</Button>
-      </div>
-      <p aria-live="polite" style={{ font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)", margin: 0 }}>{status === "sending" ? "Sending your enquiry" : "We reply within two days"}</p>
-    </form>
+    </div>
   );
 }
 

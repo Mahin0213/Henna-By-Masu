@@ -1,26 +1,10 @@
 const { Button, Eyebrow, Icon, Ornament } = window.HennaByMasuDesignSystem_0b7f2a;
 const { Footer, GUTTER, SECTION_Y } = window;
-const { useTweaks, TweaksPanel, TweakSection, TweakRadio } = window;
-
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "composition": "ledger",
-  "atmosphere": "ink",
-  "voice": "editorial"
-}/*EDITMODE-END*/;
 
 const LINEN_WASH = "repeating-linear-gradient(135deg,rgba(247,241,232,.016) 0 2px,transparent 2px 5px)";
 
-const ATMOSPHERE = {
-  ink: { page: "var(--ink-900)", texture: "none", rule: "var(--border-hairline)", head: "rgba(11,12,10,.86)", grade: "none", meta: "var(--accent-alt)" },
-  midnight: { page: "var(--surface-page-alt)", texture: LINEN_WASH, rule: "rgba(247,241,232,.13)", head: "rgba(10,20,15,.88)", grade: "saturate(.96)", meta: "var(--sage-500)" },
-  ember: { page: "var(--surface-card)", texture: LINEN_WASH, rule: "rgba(200,155,60,.28)", head: "rgba(27,21,18,.9)", grade: "saturate(1.08) contrast(1.04)", meta: "var(--copper-500)" },
-};
-
-const VOICE = {
-  intimate: { h1: "clamp(1.875rem,4vw,3rem)", h1Case: "none", h1Track: ".005em", h1Measure: "20ch", title: "clamp(1.125rem,2vw,1.5rem)", titleCase: "none", titleTrack: ".005em", lede: "var(--type-body)", measure: "46ch", gap: "clamp(28px,3.5vw,48px)", pad: "clamp(24px,3vw,40px)" },
-  editorial: { h1: "clamp(2.5rem,6vw,5rem)", h1Case: "uppercase", h1Track: ".02em", h1Measure: "12ch", title: "clamp(1.5rem,2.8vw,2.125rem)", titleCase: "uppercase", titleTrack: ".03em", lede: "var(--type-body-lg)", measure: "56ch", gap: "clamp(40px,5vw,72px)", pad: "clamp(32px,4vw,56px)" },
-  grand: { h1: "clamp(3rem,8vw,6.25rem)", h1Case: "uppercase", h1Track: ".02em", h1Measure: "10ch", title: "clamp(1.875rem,4vw,3rem)", titleCase: "uppercase", titleTrack: ".02em", lede: "var(--type-body-lg)", measure: "62ch", gap: "clamp(56px,7vw,104px)", pad: "clamp(44px,5.5vw,80px)" },
-};
+const AIR = { page: "var(--ink-900)", texture: "none", rule: "var(--border-hairline)", head: "rgba(11,12,10,.86)", grade: "none", meta: "var(--accent-alt)" };
+const TYPE = { h1: "clamp(2.5rem,6vw,5rem)", h1Case: "uppercase", h1Track: ".02em", h1Measure: "12ch", title: "clamp(1.5rem,2.8vw,2.125rem)", titleCase: "uppercase", titleTrack: ".03em", lede: "var(--type-body-lg)", measure: "56ch", gap: "clamp(40px,5vw,72px)", pad: "clamp(32px,4vw,56px)" };
 
 const POSTS = [
   {
@@ -75,10 +59,10 @@ const POSTS = [
   },
 ];
 
-function BlogHeader({ air }) {
+function BlogHeader() {
   const iconBtn = { display: "grid", placeItems: "center", minWidth: "44px", minHeight: "44px", background: "transparent", border: "none", color: "var(--ivory-50)", cursor: "pointer", textDecoration: "none" };
   return (
-    <header style={{ position: "sticky", top: 0, zIndex: 40, display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", padding: `18px ${GUTTER}`, background: air.head, backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderBottom: `1px solid ${air.rule}` }}>
+    <header style={{ position: "sticky", top: 0, zIndex: 40, display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", padding: `18px ${GUTTER}`, background: AIR.head, backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderBottom: `1px solid ${AIR.rule}` }}>
       <a href="index.html" style={{ justifySelf: "start", display: "inline-flex", alignItems: "center", gap: "12px", padding: "10px 0", color: "var(--ivory-50)", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-nav)", textTransform: "uppercase", textDecoration: "none" }}>
         <Icon name="arrowLeft" size={18} /><span className="menu-word">Back</span>
       </a>
@@ -90,39 +74,36 @@ function BlogHeader({ air }) {
   );
 }
 
-function Meta({ post, air, ordinal, showOrdinal }) {
+function Meta({ post, ordinal }) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>
-      {showOrdinal ? <span style={{ fontFamily: "var(--font-display)", color: "var(--gold-500)", letterSpacing: ".08em" }}>{ordinal}</span> : null}
-      <span style={{ color: air.meta }}>{post.cat}</span>
+      <span style={{ color: AIR.meta }}>{post.cat}</span>
       <span>{post.date}</span>
       <span>{post.read} read</span>
     </div>
   );
 }
 
-function Post({ post, open, onToggle, id, mode, air, type, ordinal }) {
-  const plate = mode === "plate";
-  const index = mode === "index";
-  const img = index && !open ? null : (
+function Post({ post, id, ordinal, defaultOpen }) {
+  const img = (
     <img src={post.src} alt={post.title} loading="lazy"
-      style={{ width: "100%", height: plate ? "clamp(260px,32vw,440px)" : index ? "clamp(180px,20vw,240px)" : "clamp(200px,22vw,280px)", objectFit: "cover", objectPosition: post.pos, filter: air.grade }} />
+      style={{ width: "100%", height: "clamp(200px,22vw,280px)", objectFit: "cover", objectPosition: post.pos, filter: AIR.grade }} />
   );
   return (
-    <article className={`post post-${mode}`} style={{ borderTop: `1px solid ${air.rule}`, padding: `${type.pad} 0` }}>
-      {plate || index ? null : img}
-      <div style={{ display: "flex", flexDirection: "column", gap: index ? "14px" : "18px" }}>
-        <Meta post={post} air={air} ordinal={ordinal} showOrdinal={index} />
-        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: type.title, lineHeight: 1.12, letterSpacing: type.titleTrack, textTransform: type.titleCase, color: "var(--ivory-50)", margin: 0, maxWidth: "20ch" }}>{post.title}</h2>
-        {plate ? img : null}
-        <p style={{ font: type.lede, color: "var(--text-body)", maxWidth: type.measure, margin: 0 }}>{post.lede}</p>
-        <div id={id} style={{ display: open ? "flex" : "none", flexDirection: "column", gap: "14px" }}>
-          {index ? img : null}
-          {post.body.map((para, i) => <p key={i} style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: type.measure, margin: 0 }}>{para}</p>)}
+    <article className="post post-ledger" style={{ borderTop: `1px solid ${AIR.rule}`, padding: `${TYPE.pad} 0` }}>
+      {img}
+      <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+        <Meta post={post} ordinal={ordinal} />
+        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: TYPE.title, lineHeight: 1.12, letterSpacing: TYPE.titleTrack, textTransform: TYPE.titleCase, color: "var(--ivory-50)", margin: 0, maxWidth: "20ch" }}>{post.title}</h2>
+        <p style={{ font: TYPE.lede, color: "var(--text-body)", maxWidth: TYPE.measure, margin: 0 }}>{post.lede}</p>
+        <div id={id} className="post-body" hidden={!defaultOpen} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+          {post.body.map((para, i) => <p key={i} style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: TYPE.measure, margin: 0 }}>{para}</p>)}
         </div>
-        <button onClick={onToggle} aria-expanded={open} aria-controls={id}
+        <button type="button" className="post-toggle" aria-expanded={defaultOpen ? "true" : "false"} aria-controls={id}
           style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: "10px", background: "none", border: "none", padding: "12px 0", cursor: "pointer", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--gold-500)" }}>
-          {open ? "Close" : "Read the piece"}<Icon name={open ? "minus" : "arrowRight"} size={16} />
+          <span className="post-toggle-label">{defaultOpen ? "Close" : "Read the piece"}</span>
+          <span className="post-toggle-open" hidden={defaultOpen}><Icon name="arrowRight" size={16} /></span>
+          <span className="post-toggle-close" hidden={!defaultOpen}><Icon name="minus" size={16} /></span>
         </button>
       </div>
     </article>
@@ -130,29 +111,23 @@ function Post({ post, open, onToggle, id, mode, air, type, ordinal }) {
 }
 
 function BlogPage() {
-  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [open, setOpen] = React.useState(0);
-  const air = ATMOSPHERE[t.atmosphere] || ATMOSPHERE.ink;
-  const type = VOICE[t.voice] || VOICE.editorial;
-  React.useEffect(() => { document.body.style.background = air.page; }, [air.page]);
   return (
     <React.Fragment>
-      <BlogHeader air={air} />
-      <main style={{ background: air.page, backgroundImage: air.texture }}>
+      <BlogHeader />
+      <main style={{ background: AIR.page, backgroundImage: AIR.texture }}>
         <section style={{ padding: `clamp(56px,7vw,110px) ${GUTTER} ${SECTION_Y}` }}>
-          <div style={{ maxWidth: "var(--content-max)", margin: "0 auto", display: "flex", flexDirection: "column", gap: type.gap }}>
+          <div style={{ maxWidth: "var(--content-max)", margin: "0 auto", display: "flex", flexDirection: "column", gap: TYPE.gap }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "26px" }}>
               <Eyebrow rule>The journal</Eyebrow>
-              <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: type.h1, lineHeight: t.voice === "intimate" ? 1.1 : 1, letterSpacing: type.h1Track, textTransform: type.h1Case, color: "var(--ivory-50)", margin: 0, maxWidth: type.h1Measure }}>Notes from the studio</h1>
-              <p style={{ font: "var(--type-body-lg)", color: "var(--text-body)", maxWidth: "48ch", margin: 0 }}>Aftercare, timings and the language of the designs — written down so you know what to expect before your date.</p>
+              <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: TYPE.h1, lineHeight: 1, letterSpacing: TYPE.h1Track, textTransform: TYPE.h1Case, color: "var(--ivory-50)", margin: 0, maxWidth: TYPE.h1Measure }}>Notes from the studio</h1>
+              <p style={{ font: "var(--type-body-lg)", color: "var(--text-body)", maxWidth: "48ch", margin: 0 }}>Aftercare, timings and the language of the designs — written down so you know what to expect before your Leicester henna appointment.</p>
             </div>
             <div>
               {POSTS.map((p, i) => (
-                <Post key={p.title} id={`post-${i}`} post={p} open={open === i} onToggle={() => setOpen(open === i ? -1 : i)}
-                  mode={t.composition} air={air} type={type} ordinal={`0${i + 1}`} />
+                <Post key={p.title} id={`post-${i}`} post={p} ordinal={`0${i + 1}`} defaultOpen={i === 0} />
               ))}
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "26px", alignItems: "flex-start", borderTop: `1px solid ${air.rule}`, paddingTop: "clamp(32px,4vw,56px)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "26px", alignItems: "flex-start", borderTop: `1px solid ${AIR.rule}`, paddingTop: "clamp(32px,4vw,56px)" }}>
               <Ornament width="180px" />
               <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "46ch", margin: 0 }}>Have a question that is not answered here? Send it with your date and we will reply.</p>
               <div className="cta-row">
@@ -164,14 +139,6 @@ function BlogPage() {
         </section>
       </main>
       <Footer />
-      <TweaksPanel>
-        <TweakSection label="Composition" />
-        <TweakRadio label="Journal layout" value={t.composition} options={["ledger", "plate", "index"]} onChange={(v) => setTweak("composition", v)} />
-        <TweakSection label="Atmosphere" />
-        <TweakRadio label="Surface" value={t.atmosphere} options={["ink", "midnight", "ember"]} onChange={(v) => setTweak("atmosphere", v)} />
-        <TweakSection label="Voice" />
-        <TweakRadio label="Editorial register" value={t.voice} options={["intimate", "editorial", "grand"]} onChange={(v) => setTweak("voice", v)} />
-      </TweaksPanel>
     </React.Fragment>
   );
 }

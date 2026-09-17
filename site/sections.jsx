@@ -6,29 +6,8 @@ const SECTION_Y = "clamp(80px,10vw,160px)";
 const LINEN = "repeating-linear-gradient(135deg,rgba(247,241,232,.016) 0 2px,transparent 2px 5px)";
 
 function Reveal({ children, delay = 0, as = "div", style }) {
-  const ref = React.useRef(null);
-  const [seen, setSeen] = React.useState(false);
-  const [instant, setInstant] = React.useState(false);
-  React.useEffect(() => {
-    const el = ref.current; if (!el) return;
-    const show = () => { if (document.hidden) setInstant(true); setSeen(true); };
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || document.hidden) { setInstant(true); setSeen(true); return; }
-    let done = false;
-    const check = () => {
-      if (done) return;
-      const r = el.getBoundingClientRect();
-      if (r.top < window.innerHeight * 0.9 && r.bottom > 0) { done = true; show(); stop(); }
-    };
-    const onScroll = () => check();
-    const stop = () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); clearInterval(poll); };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    const poll = setInterval(check, 300);
-    check();
-    return () => stop();
-  }, []);
   const Tag = as;
-  return <Tag ref={ref} style={{ opacity: seen ? 1 : 0, transform: seen ? "none" : "translateY(24px)", transition: instant ? "none" : `opacity 900ms var(--ease-out-soft) ${delay}ms,transform 900ms var(--ease-out-soft) ${delay}ms`, ...style }}>{children}</Tag>;
+  return <Tag data-reveal data-reveal-delay={delay || undefined} style={style}>{children}</Tag>;
 }
 
 const GALLERY = [
@@ -45,65 +24,45 @@ const GALLERY = [
   { video: "assets/hero-clip.mp4", src: "assets/detail-fresh-cone.jpg", cat: "Details", title: "The cone, in motion", ratio: "4 / 5", pos: "50% 40%" },
 ];
 
-function Tile({ item, onOpen }) {
-  const [hover, setHover] = React.useState(false);
+function Tile({ item, index }) {
   return (
-    <button onClick={onOpen} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} aria-label={`${item.cat} — ${item.title}. Open larger view`}
-      style={{ position: "relative", display: "block", padding: 0, border: "none", background: "none", cursor: "pointer", textAlign: "left", gridColumn: `span ${item.span || 1}`, width: "100%" }}>
-      <div style={{ position: "relative", aspectRatio: item.ratio, overflow: "hidden", background: "var(--surface-card)" }}>
+    <button type="button" className="gallery-tile" data-index={index} data-cat={item.cat}
+      aria-label={`${item.cat} — ${item.title}. Open larger view`}
+      style={{ gridColumn: `span ${item.span || 1}` }}>
+      <div className="tile-media" style={{ position: "relative", aspectRatio: item.ratio }}>
         {item.video ? (
-          <video src={item.video} poster={item.src} muted loop playsInline autoPlay style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: item.pos, transform: hover ? "scale(1.04)" : "scale(1)", transition: "transform 1400ms var(--ease-out-soft)" }} />
+          <video src={item.video} poster={item.src} muted loop playsInline autoPlay style={{ objectPosition: item.pos }} />
         ) : (
-          <img src={item.src} alt={item.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: item.pos, transform: hover ? "scale(1.04)" : "scale(1)", transition: "transform 1400ms var(--ease-out-soft)" }} />
+          <img src={item.src} alt={item.title} loading="lazy" style={{ objectPosition: item.pos }} />
         )}
-        <div style={{ position: "absolute", inset: 0, background: "var(--scrim-tile)", pointerEvents: "none" }} />
+        <div className="tile-scrim" aria-hidden="true" />
       </div>
-      <div style={{ position: "absolute", left: "24px", right: "24px", bottom: "22px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "16px", opacity: hover ? 1 : 0.82, transition: "opacity 280ms var(--ease-editorial)" }}>
+      <div className="tile-caption">
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           <span style={{ font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--accent-alt)" }}>{item.cat}</span>
           <span style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "var(--ivory-50)", letterSpacing: ".01em" }}>{item.title}</span>
         </div>
-        <Icon name="arrowUpRight" size={18} color="var(--ivory-50)" style={{ opacity: hover ? 1 : 0, transition: "opacity 280ms var(--ease-editorial)" }} />
+        <span className="tile-arrow"><Icon name="arrowUpRight" size={18} color="var(--ivory-50)" /></span>
       </div>
     </button>
   );
 }
 
-function Lightbox({ items, index, onClose, onStep }) {
-  const ref = React.useRef(null);
-  React.useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") onStep(1);
-      if (e.key === "ArrowLeft") onStep(-1);
-    };
-    document.addEventListener("keydown", onKey);
-    if (ref.current) ref.current.focus();
-    document.body.style.overflow = "hidden";
-    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
-  }, [onClose, onStep]);
-  const touch = React.useRef(0);
-  const item = items[index];
-  const navBtn = { display: "grid", placeItems: "center", width: "48px", height: "48px", background: "transparent", border: "1px solid var(--border-hairline)", color: "var(--ivory-50)", cursor: "pointer" };
+function Lightbox() {
   return (
-    <div ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-label={`${item.cat} — ${item.title}`}
-      onTouchStart={(e) => { touch.current = e.changedTouches[0].clientX; }}
-      onTouchEnd={(e) => { const d = e.changedTouches[0].clientX - touch.current; if (Math.abs(d) > 50) onStep(d < 0 ? 1 : -1); }}
-      style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(7,8,6,.96)", display: "flex", flexDirection: "column", padding: `20px ${GUTTER} 28px`, boxSizing: "border-box", outline: "none" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
-        <span style={{ font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--accent-alt)" }}>{item.cat}</span>
-        <button onClick={onClose} aria-label="Close" style={{ ...navBtn, width: "44px", height: "44px" }}><Icon name="close" size={18} /></button>
+    <div id="lightbox" className="lightbox" hidden role="dialog" aria-modal="true" aria-label="Gallery image viewer" tabIndex={-1}>
+      <div className="lightbox-bar">
+        <span id="lightbox-cat" className="lightbox-cat" />
+        <button id="lightbox-close" type="button" aria-label="Close" className="lightbox-nav-btn lightbox-close-btn"><Icon name="close" size={18} /></button>
       </div>
-      <div style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: "clamp(12px,3vw,40px)", padding: "24px 0" }}>
-        <button onClick={() => onStep(-1)} aria-label="Previous" style={{ ...navBtn, flex: "none" }}><Icon name="arrowLeft" size={18} /></button>
-        {item.video
-          ? <video src={item.video} poster={item.src} controls autoPlay loop muted defaultMuted playsInline style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }} />
-          : <img src={item.src} alt={item.title} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }} />}
-        <button onClick={() => onStep(1)} aria-label="Next" style={{ ...navBtn, flex: "none" }}><Icon name="arrowRight" size={18} /></button>
+      <div className="lightbox-stage">
+        <button id="lightbox-prev" type="button" aria-label="Previous" className="lightbox-nav-btn"><Icon name="arrowLeft" size={18} /></button>
+        <div id="lightbox-media" />
+        <button id="lightbox-next" type="button" aria-label="Next" className="lightbox-nav-btn"><Icon name="arrowRight" size={18} /></button>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "16px", flexWrap: "wrap" }}>
-        <span style={{ fontFamily: "var(--font-display)", fontSize: "1.375rem", color: "var(--ivory-50)" }}>{item.title}</span>
-        <span style={{ font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>{index + 1} / {items.length}</span>
+      <div className="lightbox-footer">
+        <span id="lightbox-title" className="lightbox-title" />
+        <span id="lightbox-count" className="lightbox-count" />
       </div>
     </div>
   );
@@ -115,7 +74,8 @@ function Intro() {
       <div style={{ maxWidth: "var(--content-max)", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(12,1fr)", gap: "clamp(32px,4vw,64px)", alignItems: "end" }} className="intro-grid">
         <Reveal style={{ gridColumn: "span 7", display: "flex", flexDirection: "column", gap: "40px" }}>
           <Eyebrow rule>The atelier</Eyebrow>
-          <p style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem,3.6vw,3.25rem)", lineHeight: 1.24, letterSpacing: ".01em", color: "var(--ivory-50)", margin: 0, maxWidth: "18ch" }}>Every line is personal. Every design is drawn for the moment it becomes part of your story.</p>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem,3.6vw,3.25rem)", lineHeight: 1.24, letterSpacing: ".01em", color: "var(--ivory-50)", margin: 0, maxWidth: "18ch", fontWeight: 400, textTransform: "none" }}>Every line is personal</h2>
+          <p style={{ font: "var(--type-body-lg)", color: "var(--text-body)", maxWidth: "44ch", margin: 0 }}>Every design is drawn for the moment it becomes part of your story.</p>
           <Ornament width="180px" />
         </Reveal>
         <Reveal delay={120} style={{ gridColumn: "span 4", gridColumnStart: "9" }}>
@@ -134,7 +94,7 @@ function Services() {
         <div className="grid-4" style={{ marginTop: "64px" }}>
           {[
             { index: "01", title: "Bridal mehndi", src: "assets/bridal-veil-portrait.jpg", description: "Full hands, feet and forearms drawn freehand across an unhurried session — temple arches, lotus and jaali worked around the motifs that matter to you.", detail: "Discover more" },
-            { index: "02", title: "Private celebrations", src: "assets/modern-diamond.jpg", description: "Engagements, Eid and birthdays at home. Fine modern linework or dense traditional panels, whichever the evening calls for.", detail: "Discover more" },
+            { index: "02", title: "Private celebration mehndi", src: "assets/modern-diamond.jpg", description: "Engagements, Eid and birthdays at home. Fine modern linework or dense traditional panels, whichever the evening calls for.", detail: "Discover more" },
             { index: "03", title: "Events & guest henna", src: "assets/festive-red.jpg", description: "A table for your guests, with quick, complete designs that still look drawn by hand — because every one of them is.", detail: "Discover more" },
             { index: "04", title: "Eid mehndi", src: "assets/detail-fresh-cone.jpg", description: "Chaand Raat sittings for the family, drawn the night before — fine jaali, trailing vines and a stain deepened in time for the morning.", detail: "Discover more" },
           ].map((s, i) => <Reveal key={s.title} delay={i * 110}><StyleCard {...s} href="enquiry.html" /></Reveal>)}
@@ -145,31 +105,28 @@ function Services() {
 }
 
 function Gallery() {
-  const [filter, setFilter] = React.useState("All");
-  const [open, setOpen] = React.useState(-1);
   const cats = ["All", "Bridal", "Modern", "Festive", "Details"];
-  const items = filter === "All" ? GALLERY : GALLERY.filter((g) => g.cat === filter);
   return (
     <section id="work" style={{ padding: `${SECTION_Y} ${GUTTER}`, background: "var(--surface-page)" }}>
       <div style={{ maxWidth: "var(--content-max)", margin: "0 auto" }}>
         <Reveal style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: "32px" }}>
-          <SectionHeading eyebrow="The gallery" title="Selected work" />
+          <SectionHeading eyebrow="The gallery" title="Selected work — Leicester henna and mehndi" />
           <div style={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
-            {cats.map((c) => (
-              <button key={c} onClick={() => { setFilter(c); }} aria-pressed={filter === c}
-                style={{ background: "none", border: "none", padding: "12px 0", cursor: "pointer", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: filter === c ? "var(--ivory-50)" : "var(--text-muted)", borderBottom: `1px solid ${filter === c ? "var(--border-ivory)" : "transparent"}`, transition: "color 280ms var(--ease-editorial),border-color 280ms var(--ease-editorial)" }}>{c}</button>
+            {cats.map((c, i) => (
+              <button key={c} type="button" className="filter-btn" data-filter={c} aria-pressed={i === 0 ? "true" : "false"}>{c}</button>
             ))}
           </div>
         </Reveal>
-        <div className="grid-gallery" style={{ marginTop: "56px" }}>
-          {items.map((item) => (
-            <Reveal key={item.title} style={{ gridColumn: `span ${item.span || 1}` }}>
-              <Tile item={item} onOpen={() => setOpen(items.indexOf(item))} />
+        <div className="grid-gallery" id="gallery-grid" style={{ marginTop: "56px" }}>
+          {GALLERY.map((item, i) => (
+            <Reveal key={item.title} as="div" style={{ gridColumn: `span ${item.span || 1}` }}>
+              <Tile item={item} index={i} />
             </Reveal>
           ))}
         </div>
+        <script type="application/json" id="gallery-data" dangerouslySetInnerHTML={{ __html: JSON.stringify(GALLERY) }} />
       </div>
-      {open >= 0 ? <Lightbox items={items} index={open} onClose={() => setOpen(-1)} onStep={(d) => setOpen((i) => (i + d + items.length) % items.length)} /> : null}
+      <Lightbox />
     </section>
   );
 }
@@ -183,7 +140,8 @@ function BridalFeature() {
         </Reveal>
         <Reveal delay={120} style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "32px", padding: `${SECTION_Y} ${GUTTER}` }}>
           <Eyebrow rule>For the bride</Eyebrow>
-          <h2 style={{ font: "var(--type-section)", color: "var(--ivory-50)", letterSpacing: "var(--ls-display)", textTransform: "uppercase", margin: 0, maxWidth: "16ch" }}>A design as individual as your celebration.</h2>
+          <h2 style={{ font: "var(--type-section)", color: "var(--ivory-50)", letterSpacing: "var(--ls-display)", textTransform: "uppercase", margin: 0, maxWidth: "16ch" }}>Bridal mehndi in Leicester</h2>
+          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: "clamp(1.25rem,2.2vw,1.75rem)", lineHeight: 1.25, letterSpacing: ".02em", textTransform: "uppercase", color: "var(--ivory-50)", margin: 0, maxWidth: "20ch" }}>A design as individual as your celebration.</h3>
           <p style={{ font: "var(--type-body-lg)", color: "var(--text-body)", maxWidth: "46ch", margin: 0 }}>Your booking opens with a conversation — the ceremony, the outfit, the names and motifs you want carried into the work. A drawn proposal follows, revised once and never repeated for another bride.</p>
           <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "46ch", margin: 0 }}>On the day the session is calm and unhurried, with aftercare and a stain plan so the colour deepens the way it should.</p>
           <div><Button variant="primary" size="lg" href="enquiry.html">Begin your bridal enquiry</Button></div>
@@ -217,12 +175,39 @@ function Artist() {
         </Reveal>
         <Reveal delay={120} style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "28px" }}>
           <Eyebrow rule>The artist</Eyebrow>
-          <h2 style={{ font: "var(--type-section)", color: "var(--ivory-50)", letterSpacing: "var(--ls-display)", textTransform: "uppercase", margin: 0, maxWidth: "12ch" }}>Masuma</h2>
+          <h2 style={{ font: "var(--type-section)", color: "var(--ivory-50)", letterSpacing: "var(--ls-display)", textTransform: "uppercase", margin: 0, maxWidth: "12ch" }}>Masuma — your henna artist in Leicester</h2>
           <p style={{ font: "var(--type-body-lg)", color: "var(--text-body)", maxWidth: "44ch", margin: 0 }}>Every design on this page is drawn by Masuma, rated five stars as a henna artist in Leicester, working from her studio and travelling across the Midlands — Birmingham, Coventry, Nottingham, Derby — for the day itself.</p>
           <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "44ch", margin: 0 }}>Freehand, cone-drawn, one pair of hands from the first line to the last.</p>
           <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "46ch", margin: 0 }}>The studio sits five minutes from Leicester city centre, and most bookings are Leicester and Leicestershire — Highfields, Belgrave, Evington, Clarendon Park, Oadby and Wigston, out to Loughborough, Hinckley and Market Harborough. Birmingham, Coventry, Nottingham and Derby are a comfortable drive.</p>
           <Ornament width="180px" />
         </Reveal>
+      </div>
+    </section>
+  );
+}
+
+const TIERS = [
+  { h: "Simple henna — from £10", p: "Single-hand designs for a party or an evening out, drawn in a short sitting." },
+  { h: "Semi bridal — from £30", p: "Fuller hands for the mehndi guest of honour, the sister, the mother of the bride." },
+  { h: "Bridal mehndi — from £50", p: "Hands, feet and forearms across an unhurried session, with your own motifs worked in." },
+];
+
+function Prices() {
+  return (
+    <section id="prices" style={{ padding: `${SECTION_Y} ${GUTTER}`, background: "var(--surface-page)", borderTop: "1px solid var(--border-hairline)" }}>
+      <div style={{ maxWidth: "var(--content-max)", margin: "0 auto" }}>
+        <Reveal><SectionHeading eyebrow="Prices" title="Henna and mehndi prices in Leicester" lede="Starting prices. The final quote depends on the design and coverage, and is confirmed before your date." /></Reveal>
+        <div className="grid-3" style={{ marginTop: "56px" }}>
+          {TIERS.map((t, i) => (
+            <Reveal key={t.h} delay={i * 110} style={{ borderTop: "1px solid var(--border-hairline)", paddingTop: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: "clamp(1.125rem,1.8vw,1.375rem)", lineHeight: 1.2, letterSpacing: ".03em", textTransform: "uppercase", color: "var(--ivory-50)", margin: 0 }}>{t.h}</h3>
+              <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "40ch", margin: 0 }}>{t.p}</p>
+            </Reveal>
+          ))}
+        </div>
+        <div className="cta-row" style={{ marginTop: "48px" }}>
+          <Button variant="outline" size="lg" href="pricing.html">Full price list</Button>
+        </div>
       </div>
     </section>
   );
@@ -275,7 +260,7 @@ function Testimonial() {
           {REVIEWS.map((r, i) => (
             <Reveal key={r.name} delay={(i % 2) * 90} style={{ gridColumn: r.lead ? "1 / -1" : "auto", borderTop: "1px solid var(--border-hairline)", paddingTop: "24px", display: "flex", flexDirection: "column", gap: "14px" }}>
               <Stars />
-              <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: r.lead ? "clamp(1.25rem,2.4vw,1.75rem)" : "clamp(1.0625rem,1.6vw,1.25rem)", lineHeight: 1.45, color: "var(--ivory-50)", margin: 0, maxWidth: r.lead ? "48ch" : "40ch" }}>{`“${r.text}”`}</p>
+              <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: r.lead ? "clamp(1.25rem,2.4vw,1.75rem)" : "clamp(1.0625rem,1.6vw,1.25rem)", lineHeight: 1.45, color: "var(--ivory-50)", margin: 0, maxWidth: r.lead ? "48ch" : "40ch" }}>{`"${r.text}"`}</p>
               <span style={{ font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>{r.name} · Google review</span>
             </Reveal>
           ))}
@@ -292,7 +277,7 @@ function Booking() {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(7,8,6,.86) 0%,rgba(7,8,6,.72) 50%,rgba(7,8,6,.92) 100%)" }} />
       <Reveal style={{ position: "relative", maxWidth: "760px", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "32px" }}>
         <Eyebrow rule align="center">By appointment</Eyebrow>
-        <h2 style={{ font: "var(--type-section)", color: "var(--ivory-50)", letterSpacing: "var(--ls-display)", textTransform: "uppercase", margin: 0, maxWidth: "18ch" }}>Let’s create something unforgettable.</h2>
+        <h2 style={{ font: "var(--type-section)", color: "var(--ivory-50)", letterSpacing: "var(--ls-display)", textTransform: "uppercase", margin: 0, maxWidth: "18ch" }}>Let's create something unforgettable.</h2>
         <p style={{ font: "var(--type-body-lg)", color: "var(--text-body)", maxWidth: "44ch", margin: 0 }}>Send the date and the celebration. We reply with availability and a proposal.</p>
         <p style={{ font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)", margin: 0 }}>34 Beckingham Rd, Leicester LE2 1HB · Travelling across the Midlands</p>
         <div className="cta-row">
@@ -347,7 +332,7 @@ function Footer() {
             <a href="index.html" style={link}>Leicester</a>
             <a href="henna-birmingham.html" style={link}>Birmingham</a>
             <a href="henna-coventry.html" style={link}>Coventry</a>
-            <a href="#faq" style={link}>All areas covered</a>
+            <a href="index.html#faq" style={link}>All areas covered</a>
           </div>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "16px", paddingTop: "28px", borderTop: "1px solid var(--border-hairline)", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>
@@ -359,4 +344,4 @@ function Footer() {
   );
 }
 
-Object.assign(window, { Reveal, Intro, Services, Gallery, BridalFeature, Process, Artist, Faq, Testimonial, Booking, Footer, GUTTER, SECTION_Y, LINEN });
+Object.assign(window, { Reveal, Intro, Services, Gallery, BridalFeature, Process, Artist, Prices, Faq, Testimonial, Booking, Footer, GUTTER, SECTION_Y, LINEN });
