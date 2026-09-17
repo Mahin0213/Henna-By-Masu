@@ -1,0 +1,40 @@
+:root{
+  --font-display:"Bodoni Moda",Didot,"Times New Roman",serif;
+  --font-body:"Jost","Helvetica Neue",Arial,sans-serif;
+
+  --fs-display-xl:clamp(3rem,7.5vw,6.25rem); /* @kind font */
+  --fs-display-l:clamp(2.5rem,5.4vw,4.5rem); /* @kind font */
+  --fs-display-m:clamp(2rem,3.6vw,3rem); /* @kind font */
+  --fs-display-s:clamp(1.5rem,2.4vw,2.125rem); /* @kind font */
+  --fs-title:1.375rem; /* @kind font */
+  --fs-body-lg:1.125rem; /* @kind font */
+  --fs-body:1rem; /* @kind font */
+  --fs-small:0.875rem; /* @kind font */
+  --fs-label:0.6875rem; /* @kind font */
+
+  --lh-display:1.04; /* @kind font */
+  --lh-title:1.25; /* @kind font */
+  --lh-body:1.7; /* @kind font */
+  --lh-label:1.2; /* @kind font */
+
+  --ls-display:0.02em; /* @kind font */
+  --ls-display-tight:-0.005em; /* @kind font */
+  --ls-label:0.28em; /* @kind font */
+  --ls-nav:0.16em; /* @kind font */
+  --ls-body:0.005em; /* @kind font */
+
+  --fw-display:400; /* @kind font */
+  --fw-display-strong:500; /* @kind font */
+  --fw-body-light:300; /* @kind font */
+  --fw-body:400; /* @kind font */
+  --fw-body-medium:500; /* @kind font */
+
+  /* Semantic roles */
+  --type-hero:var(--fw-display) var(--fs-display-xl)/var(--lh-display) var(--font-display); /* @kind font */
+  --type-section:var(--fw-display) var(--fs-display-l)/var(--lh-display) var(--font-display); /* @kind font */
+  --type-heading:var(--fw-display) var(--fs-display-m)/1.12 var(--font-display); /* @kind font */
+  --type-subheading:var(--fw-display) var(--fs-display-s)/var(--lh-title) var(--font-display); /* @kind font */
+  --type-body:var(--fw-body-light) var(--fs-body)/var(--lh-body) var(--font-body); /* @kind font */
+  --type-body-lg:var(--fw-body-light) var(--fs-body-lg)/var(--lh-body) var(--font-body); /* @kind font */
+  --type-label:var(--fw-body-medium) var(--fs-label)/var(--lh-label) var(--font-body); /* @kind font */
+}

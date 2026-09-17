@@ -1,0 +1,24 @@
+:root{
+  /* Corners stay near-square: this brand is etched, not bubbly. */
+  --radius-none:0px;--radius-xs:2px;--radius-sm:3px;--radius-pill:999px;
+
+  --border-hair:1px; /* @kind spacing */
+  --border-thick:2px; /* @kind spacing */
+
+  /* Shadows are used sparingly — depth comes from value, not blur. */
+  --shadow-none:none;
+  --shadow-lift:0 18px 48px rgba(0,0,0,.55);
+  --shadow-card:0 1px 0 rgba(247,241,232,.06) inset,0 24px 60px rgba(0,0,0,.45);
+  --shadow-glow-accent:0 0 0 1px rgba(200,155,60,.35);
+
+  /* Protection scrims over photography */
+  --scrim-hero:linear-gradient(180deg,rgba(7,8,6,.72) 0%,rgba(7,8,6,.42) 42%,rgba(7,8,6,.88) 100%); /* @kind other */
+  --scrim-tile:linear-gradient(180deg,rgba(7,8,6,0) 40%,rgba(7,8,6,.78) 100%); /* @kind other */
+  --scrim-flat:rgba(7,8,6,.55);
+
+  --blur-nav:blur(14px) saturate(120%); /* @kind other */
+  --overlay-nav:rgba(11,12,10,.45);
+
+  /* Textile grain: a faint warm noise wash for large dark panels */
+  --texture-linen:repeating-linear-gradient(135deg,rgba(247,241,232,.016) 0 2px,transparent 2px 5px); /* @kind other */
+}

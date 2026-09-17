@@ -1,0 +1,4 @@
+# Keep the server-side copy of enquiries private
+<Files "enquiries.log">
+  Require all denied
+</Files>

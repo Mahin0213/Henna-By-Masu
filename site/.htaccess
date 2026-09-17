@@ -1,0 +1,9 @@
+# Keep the server-side copy of enquiries private
+<Files "enquiries.log">
+  Require all denied
+</Files>
+
+# Serve the homepage at one URL only
+RewriteEngine On
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^ / [R=301,L]
