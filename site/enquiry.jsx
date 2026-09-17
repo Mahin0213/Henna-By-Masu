@@ -64,7 +64,7 @@ function EnquiryForm() {
         </form>
       </div>
 
-      <div id="enquiry-sent" hidden style={{ display: "flex", flexDirection: "column", gap: "28px", alignItems: "flex-start", paddingTop: "24px" }}>
+      <div id="enquiry-sent" hidden className="enquiry-panel" style={{ gap: "28px" }}>
         <Ornament width="180px" />
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.2, letterSpacing: ".03em", textTransform: "uppercase", color: "var(--ivory-50)", margin: 0 }}>Thank you — your enquiry is with us</h2>
         <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "44ch", margin: 0 }}>It has been sent to the studio and we will reply with availability and a proposal. If you would like to add anything in the meantime, message us directly.</p>
@@ -74,7 +74,7 @@ function EnquiryForm() {
         <button id="enquiry-start-again" type="button" style={{ background: "none", border: "none", padding: "12px 0", cursor: "pointer", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>Start again</button>
       </div>
 
-      <div id="enquiry-failed" hidden style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "flex-start", paddingTop: "24px" }}>
+      <div id="enquiry-failed" hidden className="enquiry-panel">
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.5rem,2.6vw,2rem)", lineHeight: 1.2, letterSpacing: ".03em", textTransform: "uppercase", color: "var(--ivory-50)", margin: 0 }}>We could not send that from here</h2>
         <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "44ch", margin: 0 }}>Your details are still filled in. Send them straight through on WhatsApp or by email instead and we will pick it up the same way.</p>
         <div className="cta-row">

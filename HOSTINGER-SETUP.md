@@ -1,14 +1,26 @@
 # Hostinger setup — enquiry form email delivery
 
-The form on `Enquiry.html` now POSTs to `send-enquiry.php`, which emails every submission to **Masuma0205@icloud.com** and also appends a copy to `enquiries.log` on the server, so nothing is ever lost. It works only once the site is published on Hostinger (PHP does not run in the design preview).
+The form on `enquiry.html` now POSTs to `send-enquiry.php`, which emails every submission to **Masuma0205@icloud.com** and also appends a copy to `enquiries.log` on the server, so nothing is ever lost. It works only once the site is published on Hostinger (PHP does not run in a static/local preview).
+
+## 0. Before you upload — rebuild if you edited any `.jsx` file
+
+The pages in `site/` are static HTML (no React or Babel loads in the browser anymore — see the `build/` folder). The `.jsx` files are the source of truth for content and layout; a small Node script renders them once, at build time, into each page's HTML. If you change a `.jsx` file, re-run the build before uploading:
+
+```
+cd build
+npm install   # first time only
+npm run build
+```
+
+This rewrites the `<body>` of every `site/*.html` file in place. `build/` itself is a dev-only tool — **do not upload the `build/` folder to Hostinger.**
 
 ## 1. Upload these files to `public_html`
 
-- all the site files (`Henna Art by Masu - Home.html`, `Enquiry.html`, `Pricing.html`, the `.jsx` files, `assets/`, `_ds/`)
+- everything in `site/` (`index.html`, `enquiry.html`, `pricing.html`, the `.jsx` files, `assets/`, `_ds/`) — **not** `build/`
 - **`send-enquiry.php`**
-- **`.htaccess`** (keeps `enquiries.log` private)
+- **`.htaccess`** (keeps `enquiries.log` private and redirects `/index.html` to `/`)
 
-Keep `send-enquiry.php` in the **same folder** as `Enquiry.html`.
+Keep `send-enquiry.php` in the **same folder** as `enquiry.html`.
 
 ## 2. Create a sending mailbox
 
@@ -44,7 +56,7 @@ Hostinger → **Emails → your mailbox → DNS/Configuration**. Confirm the **S
 
 ## 6. Test
 
-Publish, open `Enquiry.html`, submit a real enquiry. You should see "Thank you — your enquiry is with us" and get the email within a minute. Check the Junk folder on the first try and mark it "not junk".
+Publish, open `enquiry.html`, submit a real enquiry. You should see "Thank you — your enquiry is with us" and get the email within a minute. Check the Junk folder on the first try and mark it "not junk".
 
 If it fails, the page shows the server's error message and offers WhatsApp/email as a fallback so the customer is never stuck. You can also read `enquiries.log` in the File Manager to see submissions that arrived but did not email.
 

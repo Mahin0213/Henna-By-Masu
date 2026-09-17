@@ -51,5 +51,12 @@
 /* Journal — expand/collapse */
 .post-body[hidden] { display: none; }
 
+/* Enquiry form result panels — hidden must win over the flex layout, so the
+   [hidden] rule needs to sit after (and be at least as specific as) the base
+   one; nothing here uses inline `display` so this is never fought by it. */
+.enquiry-panel { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; padding-top: 24px; }
+.enquiry-panel[hidden] { display: none; }
+#enquiry-idle[hidden] { display: none; }
+
 /* Hero video controls */
 .hero-ctl-icon[hidden] { display: none; }
