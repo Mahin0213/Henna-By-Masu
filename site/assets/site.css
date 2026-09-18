@@ -58,5 +58,10 @@
 .enquiry-panel[hidden] { display: none; }
 #enquiry-idle[hidden] { display: none; }
 
-/* Hero video controls */
+/* Hero video controls — hidden entirely on mobile by site.js, since the
+   inline `display:flex` on #hero-video-controls would otherwise beat the
+   [hidden] attribute's default styling (same trap as the enquiry panels). */
 .hero-ctl-icon[hidden] { display: none; }
+#hero-video-controls { display: flex; }
+#hero-video-controls[hidden] { display: none; }
+#hero-progress-track[hidden] { display: none; }

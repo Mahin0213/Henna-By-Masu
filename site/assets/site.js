@@ -52,11 +52,27 @@
   }
 
   /* ---------- Hero video controls ---------- */
+  // The hero clip is a decorative full-bleed background loop, not content —
+  // on phones it costs real money and battery on a cellular connection for
+  // no benefit over the poster frame, so it is never fetched there at all.
+  // preload="none" plus no `src` in the static HTML (only `data-src`) means a
+  // mobile visitor downloads zero bytes of video; only this script — and
+  // only on wider viewports — ever assigns `src` and starts playback.
   function initHero() {
     var video = document.getElementById("hero-video");
     var btn = document.getElementById("hero-video-toggle");
     var bar = document.getElementById("hero-progress-bar");
+    var controls = document.getElementById("hero-video-controls");
+    var track = document.getElementById("hero-progress-track");
     if (!video || !btn) return;
+    if (!window.matchMedia("(min-width: 768px)").matches) {
+      if (controls) controls.hidden = true;
+      if (track) track.hidden = true;
+      return;
+    }
+    var src = video.getAttribute("data-src");
+    if (src) { video.setAttribute("src", src); video.load(); }
+    video.play().catch(function () {});
     var playIcon = document.getElementById("hero-ctl-play");
     var pauseIcon = document.getElementById("hero-ctl-pause");
     function sync() {

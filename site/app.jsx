@@ -39,7 +39,7 @@ function MenuOverlay() {
 function Hero() {
   return (
     <section id="top" style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `clamp(96px,14vh,132px) ${GUTTER} clamp(96px,12vh,140px)`, boxSizing: "border-box", overflow: "hidden", background: "var(--ink-950)" }}>
-      <video id="hero-video" src="assets/hero-clip.mp4" poster="assets/pair-navy.jpg" autoPlay muted loop playsInline
+      <video id="hero-video" data-src="assets/hero-clip.mp4" poster="assets/pair-navy.jpg" preload="none" muted loop playsInline
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 45%" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(7,8,6,.72) 0%,rgba(7,8,6,.38) 40%,rgba(7,8,6,.9) 100%)" }} />
       <div style={{ position: "relative", maxWidth: "var(--content-max)", margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", gap: "clamp(24px,3vw,36px)" }}>
@@ -52,13 +52,13 @@ function Hero() {
           <Button variant="outline" size="lg" href="#work">Explore the work</Button>
         </div>
       </div>
-      <div style={{ position: "absolute", right: GUTTER, bottom: "18px", display: "flex", gap: "8px" }}>
+      <div id="hero-video-controls" style={{ position: "absolute", right: GUTTER, bottom: "18px", gap: "8px" }}>
         <button id="hero-video-toggle" type="button" aria-label="Pause background video" style={{ display: "grid", placeItems: "center", width: "44px", height: "44px", background: "rgba(7,8,6,.45)", border: "1px solid var(--border-hairline)", color: "var(--ivory-50)", cursor: "pointer", padding: 0 }}>
           <span id="hero-ctl-pause" className="hero-ctl-icon" style={{ display: "flex", gap: "4px" }}><span style={{ width: "3px", height: "13px", background: "currentColor" }} /><span style={{ width: "3px", height: "13px", background: "currentColor" }} /></span>
           <span id="hero-ctl-play" className="hero-ctl-icon" hidden style={{ width: 0, height: 0, borderLeft: "10px solid currentColor", borderTop: "6px solid transparent", borderBottom: "6px solid transparent", marginLeft: "2px" }} />
         </button>
       </div>
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "1px", background: "rgba(247,241,232,.16)" }}>
+      <div id="hero-progress-track" style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "1px", background: "rgba(247,241,232,.16)" }}>
         <div id="hero-progress-bar" style={{ height: "100%", width: "0%", background: "var(--ivory-50)", transition: "width 240ms linear" }} />
       </div>
     </section>
