@@ -125,9 +125,13 @@ function assemble(file, markup) {
     html = html.replace(stylesheetRe, '$1\n<link rel="stylesheet" href="assets/site.css">');
   }
 
-  // Drop the now-unused window.PAGE / window.CITY data script — its content
-  // is already baked into the static markup below.
-  html = html.replace(/<script>window\.(PAGE|CITY)=\{[\s\S]*?\}<\/script>\n?/, '');
+  // The window.PAGE / window.CITY script in the head is deliberately left
+  // alone: it is the only copy of the service- and city-page content, and
+  // renderMarkup() reads it back on every build. Stripping it would render
+  // these pages once and then make them unbuildable. It does mean each of
+  // those pages ships ~1-2KB of JSON that is also present as rendered HTML —
+  // to remove that, the data needs to move into its own file under build/
+  // first, so the build still has a source to read.
 
   const bodyRe = /<body>[\s\S]*<\/body>/;
   if (!bodyRe.test(html)) throw new Error(file + ': <body> block not found');

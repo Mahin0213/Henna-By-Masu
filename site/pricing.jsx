@@ -48,7 +48,7 @@ function PricingPage() {
           <div style={{ maxWidth: "var(--content-max)", margin: "0 auto", display: "flex", flexDirection: "column", gap: "clamp(48px,6vw,88px)" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
               <Eyebrow rule>Entry level prices</Eyebrow>
-              <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: "clamp(2.5rem,6vw,5rem)", lineHeight: 1, letterSpacing: ".02em", textTransform: "uppercase", color: "var(--ivory-50)", margin: 0, maxWidth: "12ch" }}>Price list</h1>
+              <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: "clamp(2.5rem,6vw,5rem)", lineHeight: 1, letterSpacing: ".02em", textTransform: "uppercase", color: "var(--ivory-50)", margin: 0, maxWidth: "14ch" }}>Henna and mehndi prices</h1>
               <p style={{ font: "var(--type-body-lg)", color: "var(--text-body)", maxWidth: "48ch", margin: 0 }}>Starting prices for each kind of booking. The final quote depends on the design, the coverage and the number of people, and is confirmed before the date.</p>
             </div>
             <div style={{ borderTop: "1px solid var(--border-hairline)" }}>

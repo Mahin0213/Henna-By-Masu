@@ -119,7 +119,7 @@ function BlogPage() {
           <div style={{ maxWidth: "var(--content-max)", margin: "0 auto", display: "flex", flexDirection: "column", gap: TYPE.gap }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "26px" }}>
               <Eyebrow rule>The journal</Eyebrow>
-              <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: TYPE.h1, lineHeight: 1, letterSpacing: TYPE.h1Track, textTransform: TYPE.h1Case, color: "var(--ivory-50)", margin: 0, maxWidth: TYPE.h1Measure }}>Notes from the studio</h1>
+              <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: TYPE.h1, lineHeight: 1, letterSpacing: TYPE.h1Track, textTransform: TYPE.h1Case, color: "var(--ivory-50)", margin: 0, maxWidth: TYPE.h1Measure }}>Henna aftercare and design notes</h1>
               <p style={{ font: "var(--type-body-lg)", color: "var(--text-body)", maxWidth: "48ch", margin: 0 }}>Aftercare, timings and the language of the designs — written down so you know what to expect before your Leicester henna appointment.</p>
             </div>
             <div>
