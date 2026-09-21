@@ -23,6 +23,24 @@
     items.forEach(function (el) { io.observe(el); });
   }
 
+  /* ---------- Homepage header background ---------- */
+  function initHeader() {
+    var header = document.getElementById("site-header");
+    var hero = document.getElementById("top");
+    if (!header || !hero) return;
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var past = window.scrollY > hero.offsetHeight - header.offsetHeight;
+      header.classList.toggle("is-scrolled", past);
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  }
+
   /* ---------- Header menu overlay ---------- */
   function initMenu() {
     var btn = document.getElementById("menu-btn");
@@ -296,6 +314,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     initReveal();
+    initHeader();
     initMenu();
     initHero();
     initGallery();

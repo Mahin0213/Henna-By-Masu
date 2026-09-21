@@ -3,6 +3,18 @@
    small enhancements in site.js. Content underneath is always present and
    always visible without this file or JS; this only adds motion and hover. */
 
+/* iOS Safari paints every <button> with its own native look — on current iOS
+   a light rounded pill — unless appearance is switched off. background:none
+   alone is not enough. That turned each gallery tile and filter into a white
+   rounded box with the caption invisible on it. Inline styles still win over
+   this element rule, so buttons that set their own background keep it. */
+button { -webkit-appearance: none; appearance: none; border-radius: 0; background-color: transparent; color: inherit; font: inherit; }
+
+/* Homepage header: transparent over the hero, then the same dark bar the
+   other pages use once scrolled, so the logo stops sitting on top of text. */
+.site-header { background: transparent; transition: background-color 280ms var(--ease-editorial), border-color 280ms var(--ease-editorial); border-bottom: 1px solid transparent; }
+.site-header.is-scrolled { background: rgba(11,12,10,.86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom-color: var(--border-hairline); }
+
 /* Phone-width overflow fixes. Every page scrolled sideways on mobile:
    - .cta-row gives each button width:100%, but the design-system button is
      content-box with 40px side padding, so it came out 80px wider than the

@@ -6,7 +6,7 @@ const NAV = [["The atelier", "#services"], ["Selected work", "#work"], ["For the
 function Header() {
   const iconBtn = { display: "grid", placeItems: "center", minWidth: "44px", minHeight: "44px", background: "transparent", border: "none", color: "var(--ivory-50)", cursor: "pointer", textDecoration: "none" };
   return (
-    <header style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 60, display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", padding: `18px ${GUTTER}`, background: "transparent" }}>
+    <header id="site-header" className="site-header" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 60, display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", padding: `18px ${GUTTER}` }}>
       <button id="menu-btn" type="button" aria-expanded="false" aria-controls="menu-overlay" aria-label="Menu" style={{ ...iconBtn, justifySelf: "start", flexDirection: "row", display: "inline-flex", alignItems: "center", gap: "12px", padding: "10px 0", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-nav)", textTransform: "uppercase" }}>
         <span id="menu-btn-open-icon" className="hero-ctl-icon"><Icon name="menu" size={18} /></span>
         <span id="menu-btn-close-icon" className="hero-ctl-icon" hidden><Icon name="close" size={18} /></span>
