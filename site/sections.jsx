@@ -22,20 +22,26 @@ const GALLERY = [
   { src: "assets/pair-navy.jpg", cat: "Modern", title: "Paisley trail on navy", span: 2, ratio: "16 / 11", pos: "50% 62%" },
   { src: "assets/festive-red.jpg", cat: "Festive", title: "Mandala back-hand, festive red", ratio: "4 / 5", pos: "50% 45%" },
   { video: "assets/hero-clip.mp4", src: "assets/detail-fresh-cone.jpg", cat: "Details", title: "The cone, in motion", ratio: "4 / 5", pos: "50% 40%" },
+  { src: "assets/festive-mandala-rings.jpg", cat: "Festive", title: "Mandala back-hand, banded fingers", ratio: "4 / 5", pos: "60% 50%" },
+  { video: "assets/clip-full-hand-florals.mp4", src: "assets/clip-full-hand-florals.jpg", cat: "Modern", title: "Full-hand florals, in motion", ratio: "4 / 5", pos: "40% 60%" },
+  { src: "assets/modern-mandala-vines.jpg", cat: "Modern", title: "Half mandala, trailing vines", ratio: "4 / 5", pos: "50% 45%" },
+  { src: "assets/modern-floral-trails.jpg", cat: "Modern", title: "Floral trails on both hands", ratio: "4 / 5", pos: "50% 60%" },
+  { video: "assets/clip-family-hands.mp4", src: "assets/clip-family-hands.jpg", cat: "Festive", title: "Guest hands, drawn in turn", ratio: "4 / 5", pos: "50% 50%" },
+  { src: "assets/festive-lace-cuffs.jpg", cat: "Festive", title: "Lace cuffs, falling vines", ratio: "4 / 5", pos: "50% 55%" },
+  { video: "assets/clip-lace-cuffs.mp4", src: "assets/clip-lace-cuffs.jpg", cat: "Festive", title: "Lace cuffs, in motion", ratio: "4 / 5", pos: "50% 50%" },
 ];
 
 function Tile({ item, index }) {
   return (
     <button type="button" className="gallery-tile" data-index={index} data-cat={item.cat}
-      aria-label={`${item.cat} — ${item.title}. Open larger view`}
+      aria-label={`${item.cat} — ${item.title}. ${item.video ? "Play video" : "Open larger view"}`}
       style={{ gridColumn: `span ${item.span || 1}` }}>
       <div className="tile-media" style={{ position: "relative", aspectRatio: item.ratio }}>
-        {item.video ? (
-          <video src={item.video} poster={item.src} muted loop playsInline autoPlay style={{ objectPosition: item.pos }} />
-        ) : (
-          <img src={item.src} alt={item.title} loading="lazy" style={{ objectPosition: item.pos }} />
-        )}
+        {/* Video tiles show their poster only; the clip loads in the lightbox
+            on tap. An autoplaying <video> here downloads on every phone. */}
+        <img src={item.src} alt={item.title} loading="lazy" style={{ objectPosition: item.pos }} />
         <div className="tile-scrim" aria-hidden="true" />
+        {item.video ? <span className="tile-play" aria-hidden="true" /> : null}
       </div>
       <div className="tile-caption">
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>

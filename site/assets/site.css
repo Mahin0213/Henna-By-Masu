@@ -69,6 +69,9 @@ button { -webkit-appearance: none; appearance: none; border-radius: 0; backgroun
 .gallery-tile .tile-arrow { opacity: 0; transition: opacity 280ms var(--ease-editorial); }
 .gallery-tile:hover .tile-arrow, .gallery-tile:focus-visible .tile-arrow { opacity: 1; }
 .gallery-tile[hidden] { display: none; }
+.gallery-tile .tile-play { position: absolute; top: 50%; left: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; background: rgba(7,8,6,.55); border: 1px solid rgba(247,241,232,.5); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); pointer-events: none; transition: transform 280ms var(--ease-editorial); }
+.gallery-tile .tile-play::after { content: ""; position: absolute; left: 22px; top: 17px; border-left: 16px solid var(--ivory-50); border-top: 10px solid transparent; border-bottom: 10px solid transparent; }
+.gallery-tile:hover .tile-play, .gallery-tile:focus-visible .tile-play { transform: scale(1.08); }
 
 .filter-btn { background: none; border: none; padding: 12px 0; cursor: pointer; font: var(--type-label); font-size: var(--fs-label); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid transparent; transition: color 280ms var(--ease-editorial), border-color 280ms var(--ease-editorial); }
 .filter-btn[aria-pressed="true"] { color: var(--ivory-50); border-bottom-color: var(--border-ivory); }
