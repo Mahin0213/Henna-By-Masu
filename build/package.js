@@ -5,9 +5,10 @@
 //
 // Deliberately left out:
 // - *.jsx and _ds_bundle.js: build-time sources only, no page loads them.
-// - send-enquiry.php: its CONFIG block (sender address, SMTP password) is
-//   edited on the server; shipping the repo copy would silently overwrite it.
-//   Upload it by hand only when you mean to replace the server's settings.
+// - enquiry-config.php / enquiry-config.example.php: the mailbox password
+//   lives only in the server's enquiry-config.php, so a deploy can never
+//   overwrite it or ship it. send-enquiry.php itself holds no secrets and IS
+//   included.
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -20,7 +21,7 @@ const OUT = path.join(OUT_DIR, 'hennabymasu-site.zip');
 const include = (rel) => {
   const base = path.basename(rel);
   if (rel.endsWith('.jsx')) return false;
-  if (base === 'send-enquiry.php') return false;
+  if (base.startsWith('enquiry-config')) return false;
   if (rel.startsWith('_ds' + path.sep) && !rel.endsWith('.css')) return false;
   return true;
 };
@@ -39,8 +40,13 @@ for (const rel of files) {
   fs.copyFileSync(path.join(SITE, rel), path.join(stage, rel));
 }
 
-const required = ['index.html', 'enquiry.html', '.htaccess', 'favicon.ico', 'sitemap.xml', 'robots.txt',
+const required = ['index.html', 'enquiry.html', 'send-enquiry.php', '.htaccess', 'favicon.ico', 'sitemap.xml', 'robots.txt',
   path.join('assets', 'site.css'), path.join('assets', 'site.js')];
+const php = fs.readFileSync(path.join(SITE, 'send-enquiry.php'), 'utf8');
+if (/\$SMTP_PASS\s*=\s*'[^']+'/.test(php)) {
+  console.error("refusing to package: send-enquiry.php contains a password. Move it to enquiry-config.php on the server — the GitHub repo is public.");
+  process.exit(1);
+}
 const missing = required.filter((r) => !files.includes(r));
 if (missing.length) { console.error('refusing to package, missing:', missing.join(', ')); process.exit(1); }
 

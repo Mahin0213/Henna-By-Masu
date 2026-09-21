@@ -1,21 +1,31 @@
 <?php
 /* Enquiry form handler — Henna Art by Masu
    Upload alongside the site files (public_html). Requires PHP 7.4+ (Hostinger default is fine).
-   Edit the CONFIG block below, nothing else. */
+   Do NOT put the mailbox password in this file — the repository is public.
+   It goes in enquiry-config.php on the server; see enquiry-config.example.php. */
 
 // ---------- CONFIG ----------
+// No secrets in this file — the repository is public. The mailbox password
+// lives in enquiry-config.php, which exists only on the server (see
+// enquiry-config.example.php). That file may override any value below.
 $TO          = 'Masuma0205@icloud.com';                  // where enquiries arrive
-$FROM        = 'enquiries@hennaartbymasu.com';           // MUST be an address on your own domain (create it in Hostinger > Emails)
+$FROM        = 'enquiries@hennabymasu.com';              // must be a mailbox on hennabymasu.com (Hostinger > Emails)
 $FROM_NAME    = 'Henna Art by Masu website';
-$SITE         = 'hennaartbymasu.com';                    // your domain, used in the subject line
+$SITE         = 'hennabymasu.com';                       // used in the subject line
 
-// Optional SMTP (recommended — far better deliverability than mail()).
-// Fill these in with the mailbox you created in Hostinger > Emails, then set $USE_SMTP = true.
-$USE_SMTP     = false;
+// SMTP through the Hostinger mailbox: the message is DKIM-signed for
+// hennabymasu.com, which is what gets it into an iCloud inbox rather than
+// junk. It switches on automatically once a password is configured.
 $SMTP_HOST    = 'smtp.hostinger.com';
 $SMTP_PORT    = 465;                                     // 465 = SSL
-$SMTP_USER    = 'enquiries@hennaartbymasu.com';
-$SMTP_PASS    = '';                                      // mailbox password
+$SMTP_USER    = 'enquiries@hennabymasu.com';
+$SMTP_PASS    = '';
+$USE_SMTP     = null;                                    // null = use SMTP whenever $SMTP_PASS is set
+
+if (is_file(__DIR__ . '/enquiry-config.php')) {
+  require __DIR__ . '/enquiry-config.php';
+}
+if ($USE_SMTP === null) { $USE_SMTP = ($SMTP_PASS !== ''); }
 // ---------- END CONFIG ----------
 
 header('Content-Type: application/json; charset=utf-8');
@@ -80,6 +90,12 @@ $body = implode("\n", $lines);
 $sent = false;
 $failure = '';
 
+// Headers must be 7-bit: the subject's em dash, or a name like "Zoë", would
+// otherwise show up garbled in some mail apps.
+$mime = function ($s) { return preg_match('/[^\x20-\x7E]/', $s) ? '=?UTF-8?B?' . base64_encode($s) . '?=' : $s; };
+$subjectHeader = $mime($subject);
+$replyTo = $mime($name) . ' <' . $email . '>';
+
 if ($USE_SMTP && $SMTP_PASS !== '') {
   // Minimal SMTP client — no external libraries needed.
   $ctx = stream_context_create(['ssl' => ['verify_peer' => true, 'verify_peer_name' => true]]);
@@ -102,9 +118,11 @@ if ($USE_SMTP && $SMTP_PASS !== '') {
       $say('RCPT TO:<' . $TO . '>');
       $say('DATA');
       $headers = "From: " . $FROM_NAME . " <" . $SMTP_USER . ">\r\n"
-        . "Reply-To: " . $name . " <" . $email . ">\r\n"
+        . "Reply-To: " . $replyTo . "\r\n"
         . "To: <" . $TO . ">\r\n"
-        . "Subject: " . $subject . "\r\n"
+        . "Subject: " . $subjectHeader . "\r\n"
+        . "Date: " . date('r') . "\r\n"
+        . "Message-ID: <" . bin2hex(random_bytes(12)) . "@" . $SITE . ">\r\n"
         . "MIME-Version: 1.0\r\n"
         . "Content-Type: text/plain; charset=UTF-8\r\n\r\n";
       $res = $say($headers . str_replace("\n.", "\n..", $body) . "\r\n.");
@@ -120,10 +138,10 @@ if ($USE_SMTP && $SMTP_PASS !== '') {
 
 if (!$sent) {
   $headers = "From: " . $FROM_NAME . " <" . $FROM . ">\r\n"
-    . "Reply-To: " . $name . " <" . $email . ">\r\n"
-    . "Content-Type: text/plain; charset=UTF-8\r\n"
-    . "X-Mailer: PHP/" . phpversion();
-  $sent = @mail($TO, $subject, $body, $headers, '-f' . $FROM);
+    . "Reply-To: " . $replyTo . "\r\n"
+    . "MIME-Version: 1.0\r\n"
+    . "Content-Type: text/plain; charset=UTF-8";
+  $sent = @mail($TO, $subjectHeader, $body, $headers, '-f' . $FROM);
   if (!$sent && $failure === '') { $failure = 'The server refused to send the message.'; }
 }
 

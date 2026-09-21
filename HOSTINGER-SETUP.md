@@ -1,8 +1,15 @@
-# Hostinger setup — enquiry form email delivery
+# Hostinger setup — website and enquiry email
 
-The form on `enquiry.html` now POSTs to `send-enquiry.php`, which emails every submission to **Masuma0205@icloud.com** and also appends a copy to `enquiries.log` on the server, so nothing is ever lost. It works only once the site is published on Hostinger (PHP does not run in a static/local preview).
+The form on `enquiry.html` posts to `send-enquiry.php`, which emails every
+submission to **Masuma0205@icloud.com** — from a phone or a computer alike — and
+also appends a copy to `enquiries.log` on the server, so nothing is ever lost.
+PHP only runs once the site is on Hostinger, not in a local preview.
 
-## 0. Deploying the website — one zip
+> **The GitHub repository is public.** Never type the mailbox password into
+> any file in this project. It goes in one file that exists only on the server
+> (step 3).
+
+## 1. Deploy the website — one zip
 
 Upload the whole site as one zip rather than file by file. Uploading pages
 individually is how the live site once ended up with a new `index.html` but
@@ -17,69 +24,66 @@ every other page, the stylesheet and the script returning 404.
    This writes **`deploy/hennabymasu-site.zip`**.
 2. Hostinger → **Files → File Manager → `public_html`**.
 3. **Upload** `hennabymasu-site.zip` into `public_html`.
-4. Right-click it → **Extract** → extract into `public_html` itself (not a
-   subfolder), and allow it to overwrite existing files.
+4. Right-click it → **Extract** → into `public_html` itself (not a subfolder),
+   allowing it to overwrite existing files.
 5. Delete the zip from `public_html` afterwards.
 6. Check: `https://hennabymasu.com/assets/site.css` and
    `https://hennabymasu.com/enquiry.html` should both open, not 404.
 
-The zip deliberately **does not contain `send-enquiry.php`**, so extracting it
-can never overwrite the mail settings you have edited on the server. Upload
-that file by hand only when you intend to replace them (step 1 below).
+The zip contains `send-enquiry.php` and `.htaccess` (a hidden file — it is
+there even if the File Manager hides dotfiles). It never contains the password
+file, so a deploy can't overwrite or leak it. `build/` and `deploy/` are local
+tools — never upload them.
 
-`build/` and `deploy/` are local tools — never upload them.
+## 2. Create the sending mailbox (once)
 
-## 1. `send-enquiry.php` (first setup only)
+Hostinger → **Emails → Email Accounts → Create** →
+**`enquiries@hennabymasu.com`**, and note its password.
 
-Upload it into `public_html`, next to `enquiry.html`, and edit its CONFIG block
-there (steps 2–4). Check the domain: the repo copy says `hennaartbymasu.com`,
-but the website is `hennabymasu.com`. The `$FROM` address must be a mailbox on
-a domain you actually own on Hostinger, or mail will be rejected or land in junk.
+The form sends *as* this address. It has to be on `hennabymasu.com`: that
+domain's email records (MX, SPF, DKIM, DMARC) are already set up and pointing
+at Hostinger, which is what iCloud checks before accepting mail. An earlier
+version of the form sent as `hennaartbymasu.com`, a domain with no email
+records at all — mail from it is likely to be rejected or junked.
 
-`.htaccess` is included in the zip (it keeps `enquiries.log` private and
-redirects `/index.html` to `/`). It is a hidden file — if the File Manager
-hides dotfiles, it is still there.
+## 3. Put the password on the server (once)
 
-## 2. Create a sending mailbox
+In File Manager, in `public_html` (next to `send-enquiry.php`):
 
-Hostinger → **Emails → Email Accounts → Create**. Make something like `enquiries@yourdomain.com`. You need this because mail sent "from" an iCloud address on a Hostinger server gets marked as spam — the From address must belong to your own domain.
+1. **New file** → name it exactly **`enquiry-config.php`**
+2. Paste this, with the real password:
+   ```php
+   <?php
+   $SMTP_USER = 'enquiries@hennabymasu.com';
+   $SMTP_PASS = 'the mailbox password';
+   ```
+3. Save.
 
-## 3. Edit the CONFIG block at the top of `send-enquiry.php`
+That's all — `send-enquiry.php` detects the password and switches to sending
+through the mailbox (SMTP), which signs the mail for `hennabymasu.com` and is
+far more reliable into iCloud than plain PHP `mail()`. `.htaccess` blocks
+`enquiry-config.php` from ever being downloaded, and git and the deploy zip
+both ignore it. The template is `site/enquiry-config.example.php`.
 
-```php
-$TO        = 'Masuma0205@icloud.com';            // already set
-$FROM      = 'enquiries@yourdomain.com';         // the mailbox from step 2
-$SITE      = 'yourdomain.com';                   // your real domain
-```
+If the password is wrong or missing, the form still falls back to plain
+`mail()`, and every enquiry is still written to `enquiries.log`.
 
-That alone will work on most Hostinger plans (they allow PHP `mail()`).
+## 4. Test from a phone and a computer
 
-## 4. Recommended: switch on SMTP
+Open `https://hennabymasu.com/enquiry.html`, send a real enquiry, and check
+**Masuma0205@icloud.com**. You should see "Thank you — your enquiry is with us"
+and the email within a minute or two. Look in **Junk** on the first try and mark
+it "not junk" — iCloud learns from that. Then repeat from the other device.
 
-Much better deliverability — iCloud is strict, and plain `mail()` often lands in Junk. In the same CONFIG block:
-
-```php
-$USE_SMTP  = true;
-$SMTP_HOST = 'smtp.hostinger.com';
-$SMTP_PORT = 465;
-$SMTP_USER = 'enquiries@yourdomain.com';
-$SMTP_PASS = 'the mailbox password';
-```
-
-No plugins or libraries needed — the SMTP client is built into the file.
-
-## 5. Check the DNS records
-
-Hostinger → **Emails → your mailbox → DNS/Configuration**. Confirm the **SPF**, **DKIM** and **DMARC** records are present and green. If the domain's DNS is managed elsewhere, copy those records over. Without them iCloud may silently drop the mail.
-
-## 6. Test
-
-Publish, open `enquiry.html`, submit a real enquiry. You should see "Thank you — your enquiry is with us" and get the email within a minute. Check the Junk folder on the first try and mark it "not junk".
-
-If it fails, the page shows the server's error message and offers WhatsApp/email as a fallback so the customer is never stuck. You can also read `enquiries.log` in the File Manager to see submissions that arrived but did not email.
+If it fails, the page shows the server's error message and offers WhatsApp and
+email instead, so the customer is never stuck. `enquiries.log` in File Manager
+shows every submission that reached the server, emailed or not.
 
 ## Notes
 
-- Requires PHP 7.4 or newer — Hostinger's default is fine (**Advanced → PHP Configuration** to check).
-- Customer replies work directly: the email's Reply-To is set to the customer's own address.
-- A hidden honeypot field blocks basic spam bots. If spam ever gets through, add Cloudflare Turnstile or hCaptcha and I can wire it in.
+- Requires PHP 7.4 or newer — Hostinger's default is fine (**Advanced → PHP
+  Configuration** to check).
+- Replying to an enquiry email replies to the customer: Reply-To is set to
+  their own address.
+- A hidden honeypot field blocks basic spam bots. If spam ever gets through,
+  Cloudflare Turnstile or hCaptcha can be added.

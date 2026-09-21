@@ -3,6 +3,11 @@
   Require all denied
 </Files>
 
+# The mailbox password lives here, on the server only — never serve it
+<FilesMatch "^enquiry-config.*\.php$">
+  Require all denied
+</FilesMatch>
+
 # Serve the homepage at one URL only
 RewriteEngine On
 RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
