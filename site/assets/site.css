@@ -41,6 +41,10 @@
 /* Header menu button + overlay */
 .menu-overlay { position: fixed; inset: 0; z-index: 55; background: rgba(7,8,6,.94); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); display: flex; flex-direction: column; justify-content: center; padding: 0 clamp(20px,5vw,72px); opacity: 0; pointer-events: none; transition: opacity 480ms var(--ease-editorial); }
 .menu-overlay.is-open { opacity: 1; pointer-events: auto; }
+/* The overlay also carries [hidden] in the HTML, so even if this stylesheet
+   fails to load the menu stays out of the page instead of dumping its links
+   on top of the hero. The class rule above would otherwise override it. */
+.menu-overlay[hidden] { display: none; }
 
 /* Gallery */
 .gallery-tile { position: relative; display: block; padding: 0; border: none; background: none; cursor: pointer; text-align: left; width: 100%; }

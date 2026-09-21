@@ -25,7 +25,7 @@ function Header() {
 
 function MenuOverlay() {
   return (
-    <div id="menu-overlay" className="menu-overlay" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
+    <div id="menu-overlay" className="menu-overlay" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true" hidden>
       <nav style={{ maxWidth: "var(--content-max)", margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
         {NAV.map(([label, href]) => (
           <a key={href} href={href} tabIndex={-1}

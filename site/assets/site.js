@@ -31,10 +31,21 @@
     var openIcon = document.getElementById("menu-btn-open-icon");
     var closeIcon = document.getElementById("menu-btn-close-icon");
     var label = document.getElementById("menu-btn-label");
+    var hideTimer = null;
     function setOpen(open) {
       btn.setAttribute("aria-expanded", open ? "true" : "false");
       overlay.setAttribute("aria-hidden", open ? "false" : "true");
-      overlay.classList.toggle("is-open", open);
+      // [hidden] keeps the overlay out of the page when closed; it has to be
+      // lifted before the fade-in and restored only after the fade-out.
+      clearTimeout(hideTimer);
+      if (open) {
+        overlay.hidden = false;
+        void overlay.offsetWidth;
+        overlay.classList.add("is-open");
+      } else {
+        overlay.classList.remove("is-open");
+        hideTimer = setTimeout(function () { overlay.hidden = true; }, 500);
+      }
       if (openIcon) openIcon.hidden = open;
       if (closeIcon) closeIcon.hidden = !open;
       if (label) label.textContent = open ? "Close" : "Menu";

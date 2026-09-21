@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Pre-render pipeline: runs the site's React components through server-side rendering and bakes the output into site/*.html. Not part of the deployed site — do not upload this folder to Hostinger.",
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "package": "node build.js && node package.js"
   },
   "dependencies": {
     "@babel/core": "^7.28.5",

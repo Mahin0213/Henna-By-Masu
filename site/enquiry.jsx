@@ -45,7 +45,7 @@ function EnquiryForm() {
   return (
     <div>
       <div id="enquiry-idle">
-        <form id="enquiry-form" style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
+        <form id="enquiry-form" action="send-enquiry.php" method="post" style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
           <div className="field-grid">
             <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }} />
             <FormField label="Full name" name="name" required placeholder="Your name" />

@@ -2,25 +2,43 @@
 
 The form on `enquiry.html` now POSTs to `send-enquiry.php`, which emails every submission to **Masuma0205@icloud.com** and also appends a copy to `enquiries.log` on the server, so nothing is ever lost. It works only once the site is published on Hostinger (PHP does not run in a static/local preview).
 
-## 0. Before you upload — rebuild if you edited any `.jsx` file
+## 0. Deploying the website — one zip
 
-The pages in `site/` are static HTML (no React or Babel loads in the browser anymore — see the `build/` folder). The `.jsx` files are the source of truth for content and layout; a small Node script renders them once, at build time, into each page's HTML. If you change a `.jsx` file, re-run the build before uploading:
+Upload the whole site as one zip rather than file by file. Uploading pages
+individually is how the live site once ended up with a new `index.html` but
+every other page, the stylesheet and the script returning 404.
 
-```
-cd build
-npm install   # first time only
-npm run build
-```
+1. Make the zip (rebuilds every page first):
+   ```
+   cd build
+   npm install        # first time only
+   npm run package
+   ```
+   This writes **`deploy/hennabymasu-site.zip`**.
+2. Hostinger → **Files → File Manager → `public_html`**.
+3. **Upload** `hennabymasu-site.zip` into `public_html`.
+4. Right-click it → **Extract** → extract into `public_html` itself (not a
+   subfolder), and allow it to overwrite existing files.
+5. Delete the zip from `public_html` afterwards.
+6. Check: `https://hennabymasu.com/assets/site.css` and
+   `https://hennabymasu.com/enquiry.html` should both open, not 404.
 
-This rewrites the `<body>` of every `site/*.html` file in place. `build/` itself is a dev-only tool — **do not upload the `build/` folder to Hostinger.**
+The zip deliberately **does not contain `send-enquiry.php`**, so extracting it
+can never overwrite the mail settings you have edited on the server. Upload
+that file by hand only when you intend to replace them (step 1 below).
 
-## 1. Upload these files to `public_html`
+`build/` and `deploy/` are local tools — never upload them.
 
-- everything in `site/` (`index.html`, `enquiry.html`, `pricing.html`, the `.jsx` files, `assets/`, `_ds/`) — **not** `build/`
-- **`send-enquiry.php`**
-- **`.htaccess`** (keeps `enquiries.log` private and redirects `/index.html` to `/`)
+## 1. `send-enquiry.php` (first setup only)
 
-Keep `send-enquiry.php` in the **same folder** as `enquiry.html`.
+Upload it into `public_html`, next to `enquiry.html`, and edit its CONFIG block
+there (steps 2–4). Check the domain: the repo copy says `hennaartbymasu.com`,
+but the website is `hennabymasu.com`. The `$FROM` address must be a mailbox on
+a domain you actually own on Hostinger, or mail will be rejected or land in junk.
+
+`.htaccess` is included in the zip (it keeps `enquiries.log` private and
+redirects `/index.html` to `/`). It is a hidden file — if the File Manager
+hides dotfiles, it is still there.
 
 ## 2. Create a sending mailbox
 
