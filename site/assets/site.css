@@ -30,7 +30,7 @@ button { -webkit-appearance: none; appearance: none; border-radius: 0; backgroun
 @media (max-width: 980px) {
   .intro-grid { grid-template-columns: 1fr !important; }
 }
-@media (max-width: 360px) {
+@media (max-width: 400px) {
   h1, h2, h3 { hyphens: auto; overflow-wrap: break-word; }
 }
 /* A 1fr grid track will not shrink below its longest unbreakable word, so a

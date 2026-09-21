@@ -22,6 +22,18 @@ const OTHERS = [
   ["Solihull", "henna-solihull.html"], ["Luton", "henna-luton.html"], ["Northampton", "henna-northampton.html"], ["London", "henna-london.html"],
 ];
 
+const linkStyle = { font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--gold-500)", textDecoration: "none" };
+
+// City pages without their own cards still get the city in each heading, so
+// eight pages stop sharing three identical H2s.
+function defaultCards(name) {
+  return [
+    { h: `Bridal mehndi in ${name}`, p: "Full hands, feet and forearms drawn freehand across an unhurried session, with your own motifs worked in. From £50.", href: "bridal-mehndi.html", link: "Bridal mehndi" },
+    { h: `Party henna in ${name}`, p: "A table for your guests at engagements, birthdays and Eid gatherings. Quick, complete designs, still drawn by hand.", href: "event-mehndi.html", link: "Event mehndi" },
+    { h: "Simple small designs", p: "Fine single-hand linework for an evening out — the easy, understated designs, from £10.", href: "pricing.html", link: "Price list" },
+  ];
+}
+
 function CityPage() {
   return (
     <React.Fragment>
@@ -48,13 +60,59 @@ function CityPage() {
           <div style={{ maxWidth: "var(--content-max)", margin: "0 auto", display: "flex", flexDirection: "column", gap: "40px" }}>
             <Eyebrow rule>What we bring to {C.name}</Eyebrow>
             <div className="grid-3">
-              <div><h2 className="ch">Bridal mehndi</h2><p className="cp">Full hands, feet and forearms drawn freehand across an unhurried session, with your own motifs worked in. From £50.</p></div>
-              <div><h2 className="ch">Party &amp; guest henna</h2><p className="cp">A table for your guests at engagements, birthdays and Eid gatherings. Quick, complete designs, still drawn by hand.</p></div>
-              <div><h2 className="ch">Simple small designs</h2><p className="cp">Fine single-hand linework for an evening out — the easy, understated designs, from £10.</p></div>
+              {(C.cards || defaultCards(C.name)).map((c) => (
+                <div key={c.h} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <h2 className="ch" style={{ margin: 0 }}>{c.h}</h2>
+                  <p className="cp">{c.p}</p>
+                  <a href={c.href} style={linkStyle}>{c.link}</a>
+                </div>
+              ))}
             </div>
             <div className="cta-row"><Button variant="outline" size="lg" href="index.html#work">See the gallery</Button></div>
           </div>
         </section>
+
+        {C.sections ? (
+          <section style={{ padding: `${SECTION_Y} ${GUTTER}` }}>
+            <div style={{ maxWidth: "760px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "clamp(40px,5vw,64px)" }}>
+              {C.sections.map((s) => (
+                <div key={s.h} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+                  <h2 className="ch" style={{ margin: 0 }}>{s.h}</h2>
+                  {s.p.map((t, i) => <p key={i} className="cp" style={{ maxWidth: "62ch" }}>{t}</p>)}
+                  {s.link ? <a href={s.link[1]} style={linkStyle}>{s.link[0]}</a> : null}
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {C.areas ? (
+          <section style={{ padding: `${SECTION_Y} ${GUTTER}`, background: "var(--surface-page-alt)", backgroundImage: LINEN, borderTop: "1px solid var(--border-hairline)" }}>
+            <div style={{ maxWidth: "var(--content-max)", margin: "0 auto", display: "flex", flexDirection: "column", gap: "28px" }}>
+              <Eyebrow rule>Areas covered</Eyebrow>
+              <h2 className="ch" style={{ margin: 0 }}>Henna across {C.name}</h2>
+              <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: "12px 28px" }}>
+                {C.areas.map((a) => <li key={a} style={{ font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--ivory-50)" }}>{a}</li>)}
+              </ul>
+              <p className="cp" style={{ maxWidth: "56ch" }}>{C.areaNote}</p>
+            </div>
+          </section>
+        ) : null}
+
+        {C.faq ? (
+          <section style={{ padding: `${SECTION_Y} ${GUTTER}` }}>
+            <div style={{ maxWidth: "760px", margin: "0 auto", display: "flex", flexDirection: "column" }}>
+              <Eyebrow rule>Questions</Eyebrow>
+              <h2 className="ch" style={{ margin: "24px 0 16px" }}>Henna in {C.name}: your questions</h2>
+              {C.faq.map((f) => (
+                <div key={f.q} style={{ borderTop: "1px solid var(--border-hairline)", padding: "22px 0", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <h3 className="ch" style={{ margin: 0, fontSize: "clamp(1.0625rem,1.6vw,1.25rem)" }}>{f.q}</h3>
+                  <p className="cp" style={{ maxWidth: "62ch" }}>{f.a}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section style={{ padding: `${SECTION_Y} ${GUTTER}` }}>
           <div style={{ maxWidth: "var(--content-max)", margin: "0 auto", display: "flex", flexDirection: "column", gap: "28px" }}>
