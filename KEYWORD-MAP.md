@@ -73,7 +73,7 @@ Already owned by `bridal-mehndi.html` / `bridal-henna.html`, both well titled.
 | 15 | asian bridal mehndi | `bridal-mehndi.html` | Weak — phrase never appears in copy |
 | 16 | wedding mehndi leicester | `bridal-mehndi.html` | Weak — "wedding" is rare in the copy |
 | 17 | bridal mehndi price | `pricing.html` | Covered |
-| 18 | when to book bridal mehndi | → new aftercare/journal page | Gap |
+| 18 | when to book bridal mehndi | `booking-bridal-mehndi.html` | **Done** |
 
 15 and 16 need a sentence of body copy each, not a new page.
 
@@ -136,12 +136,12 @@ the cheapest content win available: the writing is already done.
 
 | # | Keyword | Page | Status |
 |---|---|---|---|
-| 43 | how to darken henna stain | → **split from journal** | Content exists, wrong URL |
-| 44 | henna aftercare | → **split from journal** | Content exists, wrong URL |
-| 45 | how long does henna last | → **split from journal** | Gap |
-| 46 | is black henna safe | → **split from journal** | Content exists, wrong URL |
-| 47 | black henna dangers / PPD | → **split from journal** | Content exists, wrong URL |
-| 48 | mehndi motif meanings | → **split from journal** | Content exists, wrong URL |
+| 43 | how to darken henna stain | `henna-aftercare.html` | **Done** |
+| 44 | henna aftercare | `henna-aftercare.html` | **Done** |
+| 45 | how long does henna last | `henna-aftercare.html` | **Done** |
+| 46 | is black henna safe | `black-henna.html` | **Done** |
+| 47 | black henna dangers / PPD | `black-henna.html` | **Done** |
+| 48 | mehndi motif meanings | `mehndi-motifs.html` | **Done** |
 | 49 | henna vs mehndi difference | → new journal piece | Gap |
 | 50 | how long does bridal mehndi take | `index.html` FAQ | Covered |
 
@@ -217,7 +217,6 @@ stays as the index linking to them.
 | `henna-aftercare.html` | "How to get a deeper stain" | 43, 44, 45 |
 | `booking-bridal-mehndi.html` | "When to book your bridal date" | 18 |
 | `mehndi-motifs.html` | "Reading the motifs" | 48 |
-| `chaand-raat-mehndi.html` | "Chaand Raat, drawing through the night" | 29 |
 
 ---
 
@@ -232,8 +231,11 @@ Ranked by what actually moves rankings, not by effort.
    me" cluster, which is the highest-intent traffic in this business — are won
    in the map pack, not on a web page. A profile with photos, hours, services
    and review replies will outperform every on-page change in this document.
-3. **Split the journal into individual pages.** Eight keywords, content already
-   written, no new copy needed.
+3. ~~**Split the journal into individual pages.**~~ **Done** — four article
+   pages, each with FAQ, BlogPosting and breadcrumb schema. Chaand Raat was
+   deliberately *not* split: keyword 29 is already owned by `eid-mehndi.html`,
+   and a second page would compete with it. It stays on the journal and links
+   to the Eid page instead.
 4. **Add the gap pages**, in this order: children's henna, henna stall hire,
    Loughborough, then the two seasonal pages ahead of their season.
 5. **Body-copy fixes for the "Weak" rows** — a sentence each for "Asian bridal",

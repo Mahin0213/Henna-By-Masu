@@ -6,46 +6,28 @@ const LINEN_WASH = "repeating-linear-gradient(135deg,rgba(247,241,232,.016) 0 2p
 const AIR = { page: "var(--ink-900)", texture: "none", rule: "var(--border-hairline)", head: "rgba(11,12,10,.86)", grade: "none", meta: "var(--accent-alt)" };
 const TYPE = { h1: "clamp(2.5rem,6vw,5rem)", h1Case: "uppercase", h1Track: ".02em", h1Measure: "12ch", title: "clamp(1.5rem,2.8vw,2.125rem)", titleCase: "uppercase", titleTrack: ".03em", lede: "var(--type-body-lg)", measure: "56ch", gap: "clamp(40px,5vw,72px)", pad: "clamp(32px,4vw,56px)" };
 
+// Four of these have their own page now; the journal is the index to them,
+// so their full text lives there, not here, and is not duplicated on this URL.
 const POSTS = [
   {
-    src: "assets/modern-diamond.jpg", pos: "50% 45%", cat: "Safety", date: "August 2026", read: "3 min",
-    title: "Why we never use black henna",
-    lede: "If it stains black in an hour, it is not henna.",
-    body: [
-      "Real henna is a green-brown paste that leaves an orange stain, deepening to brown over two days. Anything that goes black quickly has been mixed with para-phenylenediamine, a hair dye chemical sold as black henna.",
-      "PPD on skin causes chemical burns, blistering and scarring that can outlast the design by months, and it can leave a lifelong allergy to hair dye. It is not permitted in cosmetics applied to skin in the UK.",
-      "Every cone used here is mixed in the studio from henna powder, lemon, sugar and essential oils. Nothing else. If you have been offered black henna in Leicester for a party or a wedding, ask what is in the cone.",
-    ],
+    src: "assets/modern-diamond.jpg", pos: "50% 45%", cat: "Safety", date: "August 2026", read: "4 min",
+    title: "Why we never use black henna", href: "black-henna.html",
+    lede: "If it stains black in an hour, it is not henna. What black henna is, why it burns, and how to spot it.",
   },
   {
-    src: "assets/detail-fresh-cone.jpg", pos: "50% 40%", cat: "Aftercare", date: "August 2026", read: "4 min",
-    title: "How to get a deeper stain",
-    lede: "The colour is decided in the twelve hours after the cone leaves your hand.",
-    body: [
-      "Leave the paste on as long as you can bear — six hours is good, overnight is better. The longer the henna sits, the more dye passes into the skin, and the darker the stain sits once it oxidises.",
-      "Scrape the dried paste off rather than washing it. Water in the first few hours lifts the colour before it has set. Warm the hands over a clove pan or a mug of tea, then seal with a little mustard or coconut oil.",
-      "The stain darkens for two days after it looks finished. What is orange on the morning of the mehndi will be deep brown by the wedding.",
-    ],
+    src: "assets/detail-fresh-cone.jpg", pos: "50% 40%", cat: "Aftercare", date: "August 2026", read: "5 min",
+    title: "Henna aftercare: how to get a deeper stain", href: "henna-aftercare.html",
+    lede: "The colour is decided in the twelve hours after the cone leaves your hand — and how long it lasts after that.",
   },
   {
     src: "assets/bridal-veil-portrait.jpg", pos: "50% 32%", cat: "Bridal", date: "July 2026", read: "5 min",
-    title: "When to book your bridal date",
-    lede: "Three months is comfortable. Peak season asks for more.",
-    body: [
-      "Bridal work is one artist, one pair of hands, one booking a day. Between May and October, and around Eid, dates go early — three to six months ahead is usual for a Saturday.",
-      "The mehndi itself is best held two days before the wedding, so the stain reaches its darkest on the day you are photographed. One day is workable; the same morning rarely is.",
-      "If your date is close, ask anyway. Cancellations happen, and a smaller design can often be fitted around an existing booking.",
-    ],
+    title: "When to book your bridal mehndi", href: "booking-bridal-mehndi.html",
+    lede: "Three months is comfortable. Peak season asks for more. Which day to have it, and how long it takes.",
   },
   {
-    src: "assets/bridal-mangalsutra.jpg", pos: "50% 55%", cat: "Design", date: "June 2026", read: "6 min",
-    title: "Reading the motifs",
+    src: "assets/bridal-mangalsutra.jpg", pos: "50% 55%", cat: "Design", date: "June 2026", read: "5 min",
+    title: "Mehndi motifs and what they mean", href: "mehndi-motifs.html",
     lede: "Jaali, mor, paisley — what the language of a bridal design actually says.",
-    body: [
-      "Jaali is the lattice, the fine net that fills a panel without closing it. It carries light across the palm and gives a dense design room to breathe.",
-      "The mor, the peacock, is drawn for the beginning of something. Paisley curls out of Persian and Kashmiri work and is the shape most bridal borders are built from.",
-      "Names, initials and small portraits sit inside these forms rather than beside them — worked into the jaali so they are found rather than announced.",
-    ],
   },
   {
     src: "assets/festive-red.jpg", pos: "50% 45%", cat: "Eid", date: "March 2026", read: "3 min",
@@ -56,6 +38,7 @@ const POSTS = [
       "Designs are lighter than bridal work: trailing vines up one finger, an open mandala on the back of the hand, borders that finish at the wrist.",
       "Book the week before. The night itself is always full.",
     ],
+    link: ["Book Eid mehndi", "eid-mehndi.html"],
   },
 ];
 
@@ -84,27 +67,35 @@ function Meta({ post, ordinal }) {
   );
 }
 
-function Post({ post, id, ordinal, defaultOpen }) {
+function Post({ post, id, ordinal }) {
+  const titleStyle = { fontFamily: "var(--font-display)", fontWeight: 400, fontSize: TYPE.title, lineHeight: 1.12, letterSpacing: TYPE.titleTrack, textTransform: TYPE.titleCase, color: "var(--ivory-50)", margin: 0, maxWidth: "20ch" };
+  const action = { alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: "10px", background: "none", border: "none", padding: "12px 0", cursor: "pointer", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--gold-500)", textDecoration: "none" };
   const img = (
     <img src={post.src} alt={post.title} loading="lazy"
       style={{ width: "100%", height: "clamp(200px,22vw,280px)", objectFit: "cover", objectPosition: post.pos, filter: AIR.grade }} />
   );
   return (
     <article className="post post-ledger" style={{ borderTop: `1px solid ${AIR.rule}`, padding: `${TYPE.pad} 0` }}>
-      {img}
+      {post.href ? <a href={post.href} tabIndex={-1} aria-hidden="true">{img}</a> : img}
       <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
         <Meta post={post} ordinal={ordinal} />
-        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: TYPE.title, lineHeight: 1.12, letterSpacing: TYPE.titleTrack, textTransform: TYPE.titleCase, color: "var(--ivory-50)", margin: 0, maxWidth: "20ch" }}>{post.title}</h2>
+        <h2 style={titleStyle}>{post.href ? <a href={post.href} style={{ color: "inherit", textDecoration: "none" }}>{post.title}</a> : post.title}</h2>
         <p style={{ font: TYPE.lede, color: "var(--text-body)", maxWidth: TYPE.measure, margin: 0 }}>{post.lede}</p>
-        <div id={id} className="post-body" hidden={!defaultOpen} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-          {post.body.map((para, i) => <p key={i} style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: TYPE.measure, margin: 0 }}>{para}</p>)}
-        </div>
-        <button type="button" className="post-toggle" aria-expanded={defaultOpen ? "true" : "false"} aria-controls={id}
-          style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: "10px", background: "none", border: "none", padding: "12px 0", cursor: "pointer", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--gold-500)" }}>
-          <span className="post-toggle-label">{defaultOpen ? "Close" : "Read the piece"}</span>
-          <span className="post-toggle-open" hidden={defaultOpen}><Icon name="arrowRight" size={16} /></span>
-          <span className="post-toggle-close" hidden={!defaultOpen}><Icon name="minus" size={16} /></span>
-        </button>
+        {post.href ? (
+          <a href={post.href} style={action}>Read the piece<Icon name="arrowRight" size={16} /></a>
+        ) : (
+          <React.Fragment>
+            <div id={id} className="post-body" hidden>
+              {post.body.map((para, i) => <p key={i} style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: TYPE.measure, margin: 0 }}>{para}</p>)}
+              {post.link ? <a href={post.link[1]} style={{ ...action, padding: 0 }}>{post.link[0]}<Icon name="arrowRight" size={16} /></a> : null}
+            </div>
+            <button type="button" className="post-toggle" aria-expanded="false" aria-controls={id} style={action}>
+              <span className="post-toggle-label">Read the piece</span>
+              <span className="post-toggle-open"><Icon name="arrowRight" size={16} /></span>
+              <span className="post-toggle-close" hidden><Icon name="minus" size={16} /></span>
+            </button>
+          </React.Fragment>
+        )}
       </div>
     </article>
   );
@@ -124,7 +115,7 @@ function BlogPage() {
             </div>
             <div>
               {POSTS.map((p, i) => (
-                <Post key={p.title} id={`post-${i}`} post={p} ordinal={`0${i + 1}`} defaultOpen={i === 0} />
+                <Post key={p.title} id={`post-${i}`} post={p} ordinal={`0${i + 1}`}  />
               ))}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "26px", alignItems: "flex-start", borderTop: `1px solid ${AIR.rule}`, paddingTop: "clamp(32px,4vw,56px)" }}>

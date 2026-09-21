@@ -125,8 +125,8 @@ function assemble(file, markup) {
     html = html.replace(stylesheetRe, '$1\n<link rel="stylesheet" href="assets/site.css">');
   }
 
-  // The window.PAGE / window.CITY script in the head is deliberately left
-  // alone: it is the only copy of the service- and city-page content, and
+  // The window.PAGE / CITY / ARTICLE script in the head is deliberately left
+  // alone: it is the only copy of the service, city and article content, and
   // renderMarkup() reads it back on every build. Stripping it would render
   // these pages once and then make them unbuildable. It does mean each of
   // those pages ships ~1-2KB of JSON that is also present as rendered HTML —
@@ -158,6 +158,10 @@ const PAGES = [
   { file: 'henna-london.html', entryFile: 'location.jsx', rootName: 'CityPage', dataVar: 'CITY' },
   { file: 'pricing.html', entryFile: 'pricing.jsx', rootName: 'PricingPage', dataVar: null },
   { file: 'journal.html', entryFile: 'blog.jsx', rootName: 'BlogPage', dataVar: null },
+  { file: 'black-henna.html', entryFile: 'article.jsx', rootName: 'ArticlePage', dataVar: 'ARTICLE' },
+  { file: 'henna-aftercare.html', entryFile: 'article.jsx', rootName: 'ArticlePage', dataVar: 'ARTICLE' },
+  { file: 'booking-bridal-mehndi.html', entryFile: 'article.jsx', rootName: 'ArticlePage', dataVar: 'ARTICLE' },
+  { file: 'mehndi-motifs.html', entryFile: 'article.jsx', rootName: 'ArticlePage', dataVar: 'ARTICLE' },
   { file: 'enquiry.html', entryFile: 'enquiry.jsx', rootName: 'EnquiryPage', dataVar: null },
 ];
 
