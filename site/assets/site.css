@@ -3,6 +3,28 @@
    small enhancements in site.js. Content underneath is always present and
    always visible without this file or JS; this only adds motion and hover. */
 
+/* Phone-width overflow fixes. Every page scrolled sideways on mobile:
+   - .cta-row gives each button width:100%, but the design-system button is
+     content-box with 40px side padding, so it came out 80px wider than the
+     screen. The size/spacing values are inline styles, hence !important.
+   - the homepage intro is a 12-column grid; its 11 gaps alone are wider than
+     a phone, even though every child already spans the full row there.
+   - single long words in display headings ("UNFORGETTABLE.") cannot wrap at
+     320px, so they may hyphenate on the very narrowest screens only. */
+@media (max-width: 640px) {
+  .btn { box-sizing: border-box; max-width: 100%; padding-left: 20px !important; padding-right: 20px !important; letter-spacing: .2em !important; }
+  .btn > span { white-space: normal !important; text-align: center; }
+}
+@media (max-width: 980px) {
+  .intro-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 360px) {
+  h1, h2, h3 { hyphens: auto; overflow-wrap: break-word; }
+}
+/* A 1fr grid track will not shrink below its longest unbreakable word, so a
+   town name like WOLVERHAMPTON set the whole column's width. */
+.city-grid > * { min-width: 0; }
+
 /* Buttons — matches the design system's hover deltas exactly (same CSS vars) */
 .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 .btn-outline:hover { background: var(--ivory-50); color: var(--ink-900); border-color: var(--ivory-50); }

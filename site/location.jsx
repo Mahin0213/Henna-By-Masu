@@ -18,7 +18,7 @@ function CityHeader() {
 }
 
 const OTHERS = [
-  ["Birmingham", "henna-birmingham.html"], ["Coventry", "henna-coventry.html"], ["Wolverhampton", "henna-wolverhampton.html"],
+  ["Loughborough", "henna-loughborough.html"], ["Birmingham", "henna-birmingham.html"], ["Coventry", "henna-coventry.html"], ["Wolverhampton", "henna-wolverhampton.html"],
   ["Solihull", "henna-solihull.html"], ["Luton", "henna-luton.html"], ["Northampton", "henna-northampton.html"], ["London", "henna-london.html"],
 ];
 

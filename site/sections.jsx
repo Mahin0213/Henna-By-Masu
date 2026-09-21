@@ -326,10 +326,13 @@ function Footer() {
             <a href="bridal-henna.html" style={link}>Bridal henna designs</a>
             <a href="eid-mehndi.html" style={link}>Eid mehndi</a>
             <a href="event-mehndi.html" style={link}>Event mehndi</a>
+            <a href="childrens-henna.html" style={link}>Children's henna</a>
+            <a href="henna-stall-hire.html" style={link}>Henna stall hire</a>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <span className="col-title">Areas</span>
             <a href="index.html" style={link}>Leicester</a>
+            <a href="henna-loughborough.html" style={link}>Loughborough</a>
             <a href="henna-birmingham.html" style={link}>Birmingham</a>
             <a href="henna-coventry.html" style={link}>Coventry</a>
             <a href="index.html#faq" style={link}>All areas covered</a>

@@ -105,8 +105,8 @@ been indexed for months wins and a page published that week does not.
 |---|---|---|---|
 | 28 | eid mehndi leicester | `eid-mehndi.html` | Covered |
 | 29 | chaand raat mehndi | `eid-mehndi.html` | Covered |
-| 30 | karva chauth mehndi | → **new page** | Gap |
-| 31 | diwali mehndi | → **new page** | Gap |
+| 30 | karva chauth mehndi | `karva-chauth-mehndi.html` | **Done** |
+| 31 | diwali mehndi | `diwali-mehndi.html` | **Done** |
 | 32 | engagement mehndi | `event-mehndi.html` | Weak |
 | 33 | baby shower henna | `event-mehndi.html` | Gap |
 | 34 | birthday henna party | `event-mehndi.html` | Weak |
@@ -120,12 +120,12 @@ actually search with, and not the two services the competitor names.
 | # | Keyword | Page | Status |
 |---|---|---|---|
 | 36 | henna artist for hire | `event-mehndi.html` | Weak |
-| 37 | henna stall hire | → **new page** | Gap |
-| 38 | corporate henna events | → **new page** | Gap |
-| 39 | school fete henna | → **new page** | Gap |
-| 40 | festival henna artist | → **new page** | Gap |
-| 41 | group henna booking | `event-mehndi.html` | Gap — competitor names this |
-| 42 | children's henna party | → **new page** | Gap — competitor names this |
+| 37 | henna stall hire | `henna-stall-hire.html` | **Done** |
+| 38 | corporate henna events | `henna-stall-hire.html` | **Done** |
+| 39 | school fete henna | `henna-stall-hire.html` | **Done** |
+| 40 | festival henna artist | `henna-stall-hire.html` | **Done** |
+| 41 | group henna booking | `event-mehndi.html` | **Done** |
+| 42 | children's henna party | `childrens-henna.html` | **Done** |
 
 ## Cluster 6 — Informational (8)
 
@@ -204,7 +204,7 @@ Description: Diwali mehndi in Leicester — festive mandala and trailing designs
 Leicestershire, 25 minutes, low competition.
 ```
 Title:       Best Henna Artist in Loughborough | Bridal & Party Mehndi
-Description: Henna artist covering Loughborough and Leicestershire. Bridal mehndi, Eid henna and party henna tables drawn freehand, 25 minutes from the studio. From £10.
+Description: Henna artist covering Loughborough and Leicestershire. Bridal mehndi, Eid henna and party henna tables drawn freehand, half an hour from the studio. From £10.
 ```
 
 ### Journal pieces split to their own URLs
@@ -236,8 +236,10 @@ Ranked by what actually moves rankings, not by effort.
    deliberately *not* split: keyword 29 is already owned by `eid-mehndi.html`,
    and a second page would compete with it. It stays on the journal and links
    to the Eid page instead.
-4. **Add the gap pages**, in this order: children's henna, henna stall hire,
-   Loughborough, then the two seasonal pages ahead of their season.
+4. ~~**Add the gap pages**~~ **Done** — children's henna, henna stall hire,
+   Loughborough, Karva Chauth and Diwali, each confirmed as a real service
+   before its page was written. The seasonal pages need to be live well
+   before October to have time to index.
 5. **Body-copy fixes for the "Weak" rows** — a sentence each for "Asian bridal",
    "wedding mehndi", "engagement", "henna tattoo", the style names.
 6. **Then** revisit titles. The 17 existing ones are already strong; there is
