@@ -14,6 +14,7 @@
 // Do NOT upload this `build/` folder itself to Hostinger — see HOSTINGER-SETUP.md.
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 const vm = require('vm');
 const babel = require('@babel/core');
 const React = require('react');
@@ -138,7 +139,88 @@ function assemble(file, markup) {
   const newBody = `<body>\n<div id="app">${markup}</div>\n<script defer src="assets/site.js"></script>\n</body>`;
   html = html.replace(bodyRe, newBody);
 
+  html = tuneForCoreWebVitals(html);
+
   fs.writeFileSync(srcPath, html, 'utf8');
+}
+
+// ---------------------------------------------------------------------------
+// Core Web Vitals pass. Everything here is additive markup — no copy, styling
+// or layout is changed.
+//
+// 1. Intrinsic width/height on every <img>. Without them the browser cannot
+//    reserve space before the file arrives, so the page jumps as images load
+//    (cumulative layout shift). The CSS still decides the rendered size.
+// 2. The first non-lazy image in <main> is the largest paint on these pages,
+//    so it gets fetchpriority="high" and a matching <link rel="preload">;
+//    the browser starts it immediately instead of after the stylesheets.
+// 3. The webfonts are reached through an @import inside the design system's
+//    fonts.css, which the browser only discovers after that file downloads.
+//    Requesting the same Google Fonts URL directly from the head starts it in
+//    the first round trip. The @import stays; it then hits the cache.
+const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400&family=Jost:wght@300;400;500&display=swap';
+
+function imageSize(file) {
+  const buf = fs.readFileSync(path.join(SITE, file));
+  if (buf.slice(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) {
+    return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+  }
+  for (let i = 2; i < buf.length - 9;) {
+    if (buf[i] !== 0xff) { i++; continue; }
+    const marker = buf[i + 1];
+    if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+      return { h: buf.readUInt16BE(i + 5), w: buf.readUInt16BE(i + 7) };
+    }
+    i += 2 + buf.readUInt16BE(i + 2);
+  }
+  throw new Error('could not read dimensions: ' + file);
+}
+
+const sizeCache = new Map();
+function sizeOf(src) {
+  if (!sizeCache.has(src)) sizeCache.set(src, imageSize(src));
+  return sizeCache.get(src);
+}
+
+function tuneForCoreWebVitals(html) {
+  const head = html.slice(0, html.indexOf('</head>'));
+  // Only images inside <main> are candidates for the largest paint — the
+  // header logo renders before them but is tiny.
+  const mainAt = html.indexOf('<main');
+  const mainEnd = html.indexOf('</main>');
+  // The homepage hero is a <video> with a poster frame, not an <img>: that
+  // poster is what paints largest, so it is the one to preload.
+  const heroPoster = (html.slice(mainAt, mainEnd).match(/<video\b[^>]*\sposter="([^"]+)"/) || [])[1];
+  let lcp = heroPoster || null;
+
+  html = html.replace(/<img\b[^>]*>/g, (tag, at) => {
+    const src = (tag.match(/\ssrc="([^"]+)"/) || [])[1];
+    if (!src || /^https?:/.test(src)) return tag;
+    let out = tag;
+    if (!/\swidth=/.test(out)) {
+      const { w, h } = sizeOf(src);
+      out = out.replace(/^<img\b/, `<img width="${w}" height="${h}"`);
+    }
+    if (!/\sdecoding=/.test(out)) out = out.replace(/^<img\b/, '<img decoding="async"');
+    if (!lcp && mainAt !== -1 && at > mainAt && at < mainEnd && !/loading="lazy"/.test(out)) {
+      lcp = src;
+      if (!/fetchpriority=/.test(out)) out = out.replace(/^<img\b/, '<img fetchpriority="high"');
+    }
+    return out;
+  });
+
+  const inject = [];
+  if (!head.includes('fonts.googleapis.com/css2')) {
+    inject.push(`<link rel="stylesheet" href="${FONT_CSS}">`);
+  }
+  if (lcp && !head.includes('rel="preload" as="image"')) {
+    inject.push(`<link rel="preload" as="image" href="${lcp}" fetchpriority="high">`);
+  }
+  if (inject.length) {
+    const anchor = '<link rel="stylesheet" href="_ds/';
+    html = html.replace(anchor, inject.join('\n') + '\n' + anchor);
+  }
+  return html;
 }
 
 const PAGES = [
@@ -183,3 +265,27 @@ for (const p of PAGES) {
   }
 }
 if (failed) process.exit(1);
+
+// Refresh <lastmod> from each page's last commit date, so the sitemap stops
+// telling Google that pages rewritten this month last changed in August.
+// Uncommitted pages fall back to the file's own timestamp.
+(function updateSitemapDates() {
+  const smPath = path.join(SITE, 'sitemap.xml');
+  let sm = fs.readFileSync(smPath, 'utf8');
+  let changed = 0;
+  sm = sm.replace(/<loc>https:\/\/hennabymasu\.com\/([^<]*)<\/loc><lastmod>([^<]*)<\/lastmod>/g, (m, slug, was) => {
+    const file = slug === '' ? 'index.html' : slug;
+    const abs = path.join(SITE, file);
+    if (!fs.existsSync(abs)) return m;
+    let date;
+    try {
+      date = execFileSync('git', ['log', '-1', '--format=%cs', '--', 'site/' + file],
+        { cwd: path.join(__dirname, '..'), encoding: 'utf8' }).trim();
+    } catch (e) { date = ''; }
+    if (!date) date = fs.statSync(abs).mtime.toISOString().slice(0, 10);
+    if (date !== was) changed++;
+    return `<loc>https://hennabymasu.com/${slug}</loc><lastmod>${date}</lastmod>`;
+  });
+  fs.writeFileSync(smPath, sm, 'utf8');
+  console.log('sitemap lastmod refreshed:', changed, 'entries');
+})();
