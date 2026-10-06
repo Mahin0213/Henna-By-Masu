@@ -432,6 +432,158 @@ guides are excluded.
 
 ---
 
+## 10. Birmingham, Coventry and the West Midlands
+
+Added 6 October, answering a follow-up brief that framed the business as "serving
+Birmingham, Coventry, Leicester and nearby areas". That framing needs correcting
+before any of it is actioned, because it changes what the pages should say.
+
+### The premise, corrected
+
+**The site does not confirm a West Midlands business. It confirms a Leicester
+studio that travels.** Every page gives the address as 34 Beckingham Rd,
+Leicester LE2 1HB, and every city page states its distance *from that studio* —
+Coventry 25 minutes, Solihull 40, Birmingham 45, Wolverhampton an hour.
+
+That distinction decides three things:
+
+1. **The map results are not winnable outside Leicester.** Google's local pack
+   is driven by physical location. Presenting the business as Birmingham-based
+   would be inaccurate and would still not win the map there. The realistic
+   target in Birmingham and Coventry is the ordinary results below the map,
+   which is exactly where the two rebuilt pages are aimed.
+2. **"Henna artist in the West Midlands" is a weak target for this business.**
+   Regional phrases are searched far less than city names, and the site uses
+   "West Midlands" only twice. Serve it from the pages that already exist
+   rather than building a page for it. **[VALIDATE with keyword data]**
+3. **The East Midlands is the bigger missed opportunity.** Nottingham and Derby
+   are named 31 times each across the site and sit in the homepage's service-area
+   schema — but neither has a page, while London, Luton and Northampton, 90 to
+   120 minutes away, each have one. That is backwards.
+
+### A four-tier service area
+
+| Tier | Areas | Travel (site's own figures) | What to do |
+|---|---|---|---|
+| 1 — home | Leicester, Leicestershire | 0–30 min | Already the strongest part of the site |
+| 2 — genuine second catchment | Coventry 25, Solihull 40, Birmingham 45 | under an hour | Birmingham and Coventry rebuilt; Solihull is next |
+| 2b — confirmed but unbuilt | Nottingham, Derby | **[CONFIRM travel time]** | Pages worth building, on the Birmingham model |
+| 3 — edge | Wolverhampton | 1 hour | Strengthen or fold into Birmingham |
+| 4 — exceptional | Northampton 1h, Luton 1.5h, London 2h | full-day bookings only | Leave; do not invest further |
+
+### Keyword map for the Midlands terms
+
+Your brief said not to build thin, near-duplicate location pages. **That matches
+what the site already has a problem with:** Solihull, Wolverhampton, Luton,
+Northampton and London are 239–252-word templates, against 703 for Birmingham
+and 635 for Coventry. The answer is depth on the pages that earn it, not more
+pages. Nothing below requires a new city page except Nottingham and Derby.
+
+| Keyword (hypothesis) | Page | Intent | Confirmed? |
+|---|---|---|---|
+| henna artist Birmingham | henna-birmingham | local commercial | Yes |
+| mehndi artist Birmingham | henna-birmingham | local commercial | Yes |
+| bridal henna Birmingham | henna-birmingham | commercial research | Yes |
+| bridal mehndi artist Birmingham | henna-birmingham | commercial research | Yes |
+| henna for weddings Birmingham | henna-birmingham | commercial research | Yes |
+| Asian bridal henna Birmingham | henna-birmingham | commercial research | Phrase not used **[CONFIRM]** |
+| Arabic henna designs Birmingham | henna-birmingham → bridal-henna | design research | Arabic yes; pairing with the city is a stretch — better served by the style sections on bridal-henna |
+| henna for Eid Birmingham | eid-mehndi | seasonal | Eid yes; the city pairing is not stated **[CONFIRM Chaand Raat travel]** |
+| mobile henna artist Birmingham / Coventry | henna-birmingham / henna-coventry | local commercial | **The word "mobile" appears nowhere on the site.** The service matches it. **[CONFIRM wording]** |
+| henna artist Coventry | henna-coventry | local commercial | Yes |
+| mehndi artist Coventry | henna-coventry | local commercial | Yes |
+| bridal henna Coventry | henna-coventry | commercial research | Yes |
+| wedding mehndi artist Coventry | henna-coventry | commercial research | Yes |
+| Indian bridal mehndi Coventry | henna-coventry → bridal-henna | commercial research | "Traditional Indian panels" only **[CONFIRM]** |
+| henna for parties Coventry | henna-coventry → event-mehndi | local commercial | Yes |
+| henna artist Solihull | henna-solihull | local commercial | Page exists but is thin — strengthen before targeting |
+| mehndi artist Wolverhampton | henna-wolverhampton | local commercial | Same |
+| henna artist near Warwick | henna-coventry | local commercial | **Not confirmed.** The site says "north Warwickshire" and names Kenilworth, Bedworth and Nuneaton — never Warwick town **[CONFIRM]** |
+| henna artist in the West Midlands | henna-birmingham + an areas hub | regional | Weak as a standalone target; serve from existing pages |
+| henna artist for events in the West Midlands | henna-stall-hire | organiser | Yes — the stall page already names the Midlands |
+| custom henna designs West Midlands | bridal-henna | design research | Freehand yes; the regional pairing is weak |
+| henna artist Leicester / mehndi artist Leicester / bridal henna Leicester | index, bridal-henna | local commercial | Yes — see sections 4 and 5 |
+| Pakistani bridal mehndi Leicester | bridal-henna | commercial research | **Never mentioned [CONFIRM]** |
+| henna for Diwali Leicester | diwali-mehndi | seasonal | Yes |
+
+### What to build, in order
+
+1. **An "Areas covered" hub page.** This is the right home for regional and
+   edge-of-area searches — West Midlands, East Midlands, Warwickshire — without
+   a thin page per town. It links to every city page, states the tiers in plain
+   English, and gives the travel policy once. It also fixes the footer's "All
+   areas covered" link, which currently points at the homepage FAQ.
+2. **Nottingham and Derby pages**, built like Birmingham: unique sections, named
+   areas, their own FAQs. They are already claimed as service areas.
+   **[CONFIRM travel times before writing.]**
+3. **Solihull to Birmingham depth.** Solihull is 40 minutes and a real market.
+   Either give it the Birmingham treatment or fold it into Birmingham as a
+   section and redirect. Do not leave it as a 239-word template.
+4. **Wolverhampton:** same decision, lower priority — it is the furthest of the
+   West Midlands set at an hour.
+
+### Per-page notes for the Midlands pages
+
+**`henna-birmingham.html`** — rebuilt 21 September: 703 words, city-specific
+cards, three unique sections, 12 named areas, 5 FAQs, Service and FAQPage
+schema. *Next:* add the style sections (Arabic, Khaleeji, Indian) once confirmed,
+and a line on Chaand Raat travel if Masuma travels to Birmingham for it.
+
+**`henna-coventry.html`** — rebuilt the same day: 635 words, 11 named areas,
+4 FAQs, leaning on proximity and short-notice bookings. *Next:* if Warwick is
+genuinely covered, name it in the areas list; that single word is the honest way
+to serve "near Warwick" without a page.
+
+**`henna-solihull.html` / `henna-wolverhampton.html`** — 239 and 250 words,
+sharing the standard template. Until they are deepened they are the pages most
+likely to be read as doorway pages, which can drag on the whole set.
+
+### Homepage copy, multi-city version
+
+The homepage should stay Leicester-first — that is where it can win outright.
+One addition to the trust block from section 6, replacing a vaguer line:
+
+> Studio in Leicester · Coventry 25 minutes, Birmingham 45 · travelling across
+> the Midlands
+
+That states the travel radius in the terms customers actually think in, without
+implying a second base.
+
+### Articles with a Midlands angle
+
+From the ten in section 8, three gain a regional version worth writing — and
+they are stronger as one article each, not one per city:
+
+- **"How far do you travel for bridal mehndi?"** — the travel policy, the tiers
+  and what travel costs. Answers the question every out-of-town enquirer has.
+  **[CONFIRM charges]**
+- **"Booking a henna artist from out of town"** — how the video consultation
+  works, which removes the main objection for a Birmingham bride.
+- **"How many henna artists does my event need?"** — already listed; give the
+  examples Midlands venue types.
+
+### Roadmap additions
+
+- **Quick:** add Warwick to the Coventry areas list if confirmed; decide the
+  wording for "mobile henna artist" and use it consistently if confirmed.
+- **Next:** build the areas hub; deepen Solihull; add Nottingham and Derby.
+- **Longer term:** get listed on Birmingham and Coventry wedding supplier
+  directories — in those cities, being listed where brides look will do more
+  than any further on-page work.
+
+### Extra facts to confirm for this section
+
+17. Does Masuma travel to Birmingham and Coventry on Chaand Raat, or is that
+    Leicester-only?
+18. Is Warwick town covered, or only north Warwickshire?
+19. Should "mobile henna artist" be used on the site? It describes the service
+    but is absent from the copy.
+20. Travel times to Nottingham and Derby, and whether they should have pages.
+21. Keep Solihull and Wolverhampton as separate pages, or fold them into
+    Birmingham?
+
+---
+
 ## Facts the owner must confirm
 
 Nothing in this document assumes an answer to any of these. Several
