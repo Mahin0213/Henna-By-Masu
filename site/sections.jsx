@@ -341,7 +341,7 @@ function Footer() {
             <a href="henna-loughborough.html" style={link}>Loughborough</a>
             <a href="henna-birmingham.html" style={link}>Birmingham</a>
             <a href="henna-coventry.html" style={link}>Coventry</a>
-            <a href="index.html#faq" style={link}>All areas covered</a>
+            <a href="areas-covered.html" style={link}>All areas covered</a>
           </div>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "16px", paddingTop: "28px", borderTop: "1px solid var(--border-hairline)", font: "var(--type-label)", fontSize: "var(--fs-label)", letterSpacing: "var(--ls-label)", textTransform: "uppercase", color: "var(--text-muted)" }}>
