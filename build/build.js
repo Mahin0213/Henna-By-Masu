@@ -236,6 +236,8 @@ const PAGES = [
   { file: 'karva-chauth-mehndi.html', entryFile: 'service.jsx', rootName: 'ServicePage', dataVar: 'PAGE' },
   { file: 'diwali-mehndi.html', entryFile: 'service.jsx', rootName: 'ServicePage', dataVar: 'PAGE' },
   { file: 'henna-loughborough.html', entryFile: 'location.jsx', rootName: 'CityPage', dataVar: 'CITY' },
+  { file: 'henna-nottingham.html', entryFile: 'location.jsx', rootName: 'CityPage', dataVar: 'CITY' },
+  { file: 'henna-derby.html', entryFile: 'location.jsx', rootName: 'CityPage', dataVar: 'CITY' },
   { file: 'areas-covered.html', entryFile: 'service.jsx', rootName: 'ServicePage', dataVar: 'PAGE' },
   { file: 'henna-birmingham.html', entryFile: 'location.jsx', rootName: 'CityPage', dataVar: 'CITY' },
   { file: 'henna-coventry.html', entryFile: 'location.jsx', rootName: 'CityPage', dataVar: 'CITY' },
